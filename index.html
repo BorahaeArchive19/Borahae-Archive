@@ -28,9 +28,7 @@ header{position:sticky;top:0;z-index:30;backdrop-filter:blur(12px);background:co
 .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none}
 .btn-danger{background:color-mix(in srgb,var(--danger) 18%,var(--surface2));color:var(--danger);border-color:color-mix(in srgb,var(--danger) 40%,transparent)}
 .btn-sm{padding:6px 10px;font-size:.8rem;border-radius:8px}
-.subtabs{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;padding:8px;border-radius:12px;background:var(--surface);border:1px solid var(--border)}
 .admin-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;font-size:.72rem;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
-.author-link{color:var(--accent2);font-weight:600;text-decoration:underline dotted;text-underline-offset:3px}
 .hero{margin:20px 0;padding:22px;border-radius:18px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 20%,var(--surface)),var(--surface));border:1px solid var(--border)}
 .hero h1{font-size:1.55rem;margin-bottom:6px}
 .hero p{color:var(--muted);font-size:.95rem;max-width:720px}
@@ -75,7 +73,6 @@ header{position:sticky;top:0;z-index:30;backdrop-filter:blur(12px);background:co
 .stat-lbl{font-size:.78rem;color:var(--muted)}
 .rule-list{display:grid;gap:10px;margin-top:10px}
 .rule-item{background:var(--surface2);border-radius:12px;padding:12px 14px;font-size:.9rem}
-.avatar-circle{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:800;display:grid;place-items:center;font-size:1.1rem;flex-shrink:0}
 label{display:block;font-size:.84rem;font-weight:600;margin-bottom:4px;color:var(--muted)}
 .toast{position:fixed;bottom:18px;right:18px;z-index:60;background:var(--accent);color:#fff;padding:10px 16px;border-radius:12px;font-size:.88rem;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.35);display:none}
 .empty{text-align:center;padding:40px 16px;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:16px}
@@ -91,7 +88,7 @@ label{display:block;font-size:.84rem;font-weight:600;margin-bottom:4px;color:var
     </button>
     <div class="nav-btns" id="mainNav">
       <button class="btn btn-sm" data-nav="archive" onclick="setView('archive')">Archivo</button>
-      <button class="btn btn-sm" data-nav="authors" onclick="setView('authors')">Autoras</button>
+      <a class="btn btn-sm" data-nav="authors" href="autoras.html">Autoras</a>
       <button class="btn btn-sm" data-nav="saved" onclick="setView('saved')">Guardados (<span id="savedCount">0</span>)</button>
       <button class="btn btn-sm" data-nav="rules" onclick="setView('rules')">Reglas</button>
       <button class="btn btn-sm" data-nav="profile" onclick="setView('profile')">Mi Perfil</button>
@@ -111,13 +108,6 @@ const SHIPS = ["Todos","Yoonmin","Taekook","Namjin","Sope","Vmin","Jikook","OT7"
 const CATS = ["Todos","Omegaverse","One-Shot","AU","Angst","Fluff","Misterio"];
 const RATINGS = ["Todo público","+13 Teen","+16","+18 Explícito"];
 const STATUSES = ["Completada","En emisión"];
-
-const DEFAULT_AUTHORS = {
-  "@borahae_admin":{handle:"@borahae_admin",bias:"OT7",bio:"Administradora de Borahae Archive — cuidando el espacio y las historias 💜"},
-  "@min_borahae":{handle:"@min_borahae",bias:"Yoongi & Jimin",bio:"Fan de los one-shots lluviosos, cafés tibios y finales que abrazan el corazón."},
-  "@luna_omega":{handle:"@luna_omega",bias:"Taehyung & Jungkook",bio:"Escribiendo sagas Omegaverse, destinos entrelazados y angst con redención."},
-  "@seoul_diario":{handle:"@seoul_diario",bias:"Namjoon & Jin",bio:"Historias nocturnas, AUs cotidianos y canciones dedicadas a medianoche."}
-};
 
 const DEFAULT_STORIES = [
   {
@@ -206,7 +196,6 @@ const DEFAULT_STORIES = [
 
 const DEFAULT_STATE = {
   profile:{handle:"@borahae_admin",bias:"OT7",bio:"Administradora de Borahae Archive — cuidando el espacio y las historias 💜",isAdmin:true},
-  authors:DEFAULT_AUTHORS,
   prefs:{theme:"dark",font:"serif",fontSize:18,allowAdult:false},
   saved:[],
   lastRead:null,
@@ -220,11 +209,10 @@ function loadState(){
     const parsed = JSON.parse(raw);
     return {
       profile:{...DEFAULT_STATE.profile,...(parsed.profile||{})},
-      authors:{...structuredClone(DEFAULT_AUTHORS),...(parsed.authors||{})},
       prefs:{...DEFAULT_STATE.prefs,...(parsed.prefs||{})},
       saved:Array.isArray(parsed.saved)?parsed.saved:[],
       lastRead:parsed.lastRead && typeof parsed.lastRead === "object" ? parsed.lastRead : null,
-      stories:Array.isArray(parsed.stories)&&parsed.stories.length?parsed.stories:structuredClone(DEFAULT_STATE.stories)
+      stories:Array.isArray(parsed.stories)&&parsed.stories.length?parsed.stories:structuredClone(DEFAULT_STORIES)
     };
   }catch(e){
     return structuredClone(DEFAULT_STATE);
@@ -241,7 +229,6 @@ let sortBy = "recent";
 let searchQuery = "";
 let activeStoryId = null;
 let activeChapterIdx = 0;
-let activeAuthorHandle = null;
 let adultConfirmedId = null;
 let editorMode = "new";
 let targetStoryId = null;
@@ -251,39 +238,6 @@ function normHandle(h=""){
   const clean = String(h).trim();
   if(!clean) return "@army_autora";
   return clean.startsWith("@") ? clean : "@" + clean;
-}
-
-function getAllAuthorsList(){
-  const map = new Map();
-  Object.values(state.authors || {}).forEach(a => {
-    if(a && a.handle) map.set(a.handle.toLowerCase(), getAuthorRecord(a.handle));
-  });
-  state.stories.forEach(s => {
-    const rec = getAuthorRecord(s.author);
-    map.set(rec.handle.toLowerCase(), rec);
-  });
-  return Array.from(map.values());
-}
-
-function getAuthorRecord(handle){
-  const clean = normHandle(handle);
-  const key = Object.keys(state.authors || {}).find(k => k.toLowerCase() === clean.toLowerCase());
-  if(key) return state.authors[key];
-  if(clean.toLowerCase() === (state.profile.handle || "").toLowerCase()){
-    return {handle:state.profile.handle, bias:state.profile.bias || "OT7", bio:state.profile.bio || ""};
-  }
-  return {handle:clean, bias:"OT7", bio:"Autora/or en Borahae Archive 💜"};
-}
-
-function saveAuthorRecord(handle, bias, bio){
-  const clean = normHandle(handle);
-  state.authors = state.authors || {};
-  const existingKey = Object.keys(state.authors).find(k => k.toLowerCase() === clean.toLowerCase()) || clean;
-  state.authors[existingKey] = {
-    handle:clean,
-    bias:(bias || "OT7").trim(),
-    bio:(bio || "").trim() || "Autora/or en Borahae Archive 💜"
-  };
 }
 
 function saveState(){
@@ -363,10 +317,6 @@ function recordLastRead(storyId, chIdx){
 function setView(nextView){
   view = nextView;
   showPreview = false;
-  if(nextView === "authors" && !activeAuthorHandle){
-    const first = getAllAuthorsList()[0];
-    activeAuthorHandle = first ? first.handle : state.profile.handle;
-  }
   render();
   window.scrollTo({top:0,behavior:"smooth"});
 }
@@ -381,14 +331,7 @@ function openStory(id, chIdx=0){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
-function openAuthorProfile(handle){
-  activeAuthorHandle = normHandle(handle);
-  view = "author";
-  showPreview = false;
-  render();
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-  function continueReading(){
+function continueReading(){
   if(!state.lastRead) return;
   const st = state.stories.find(x => x.id === state.lastRead.storyId);
   if(!st){
@@ -419,7 +362,7 @@ function toggleSaved(id){
     toast("Guardado en tu biblioteca 💜");
   }
   saveState();
-  if(view === "saved" || view === "reader" || view === "author") render();
+  if(view === "saved" || view === "reader") render();
 }
 
 function toggleLike(id){
@@ -498,7 +441,6 @@ function importJsonBackup(file){
       if(!Array.isArray(data.stories)) throw new Error("Formato inválido");
       state = {
         profile:{...DEFAULT_STATE.profile,...(data.profile||{})},
-        authors:{...structuredClone(DEFAULT_AUTHORS),...(data.authors||{})},
         prefs:{...DEFAULT_STATE.prefs,...(data.prefs||{})},
         saved:Array.isArray(data.saved)?data.saved:[],
         lastRead:data.lastRead && typeof data.lastRead === "object" ? data.lastRead : null,
@@ -566,7 +508,7 @@ function renderCard(s){
           <span class="rating ${isAdult?"adult":""}">${esc(s.rating)}</span>
         </div>
         <h3 class="title"><a href="#${esc(s.id)}" onclick="event.preventDefault();openStory('${esc(s.id)}')">${esc(s.title)}</a></h3>
-        <div class="author">por <button type="button" class="author-link" onclick="openAuthorProfile('${esc(s.author)}')">${esc(s.author)}</button> · ${esc(s.status)}</div>
+        <div class="author">por ${esc(s.author)} · ${esc(s.status)}</div>
         <p class="synopsis" style="margin-top:8px">${esc(s.synopsis)}</p>
         <div class="tags" style="margin-top:10px">
           ${(s.warnings||[]).map(w=>`<span class="tag">⚠️ ${esc(w)}</span>`).join("")}
@@ -620,130 +562,6 @@ function renderArchive(list, titleText="Historias destacadas de ARMY"){
     ${list.length ? `<div class="grid">${list.map(renderCard).join("")}</div>` : `<div class="empty">No encontramos historias con ese filtro. Probá limpiar la búsqueda o publicar la tuya 💜</div>`}
   `;
 }
-
-function renderAuthorsSubtabs(currentMode){
-  const allAuthors = getAllAuthorsList();
-  const targetHandle = activeAuthorHandle || (allAuthors[0] ? allAuthors[0].handle : state.profile.handle);
-  return `
-    <div class="subtabs">
-      <button class="btn btn-sm ${currentMode==="directory"?"btn-primary":""}" onclick="setView('authors')">Todas las autoras (${allAuthors.length})</button>
-      <button class="btn btn-sm ${currentMode==="single"?"btn-primary":""}" onclick="openAuthorProfile('${esc(targetHandle)}')">Perfil de autora</button>
-      <select class="select" style="width:auto;padding:5px 10px;font-size:.8rem" aria-label="Seleccionar autora" onchange="openAuthorProfile(this.value)">
-        ${allAuthors.map(a=>`<option value="${esc(a.handle)}" ${a.handle.toLowerCase()===normHandle(targetHandle).toLowerCase()?"selected":""}>${esc(a.handle)}</option>`).join("")}
-      </select>
-      <button class="btn btn-sm" style="margin-left:auto" onclick="setView('archive')">← Archivo</button>
-    </div>
-  `;
-}
-
-function renderAuthorsDirectory(){
-  const list = getAllAuthorsList();
-  return `
-    ${renderAuthorsSubtabs("directory")}
-    <section class="hero">
-      <h1>✍️ Autoras y Autores de Borahae Archive</h1>
-      <p>Pestaña conectada al menú principal para recorrer a cada autora/usuario del archivo y abrir su perfil completo.</p>
-    </section>
-    <div class="grid">
-      ${list.map(a => {
-        const works = state.stories.filter(s => s.author.toLowerCase() === a.handle.toLowerCase());
-        const likes = works.reduce((acc, s) => acc + (s.likes || 0), 0);
-        const isThisAdmin = a.handle.toLowerCase() === (state.profile.handle || "").toLowerCase() && state.profile.isAdmin;
-        return `
-          <article class="card">
-            <div>
-              <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
-                <div class="avatar-circle">${esc(a.handle.replace(/^@/,"").slice(0,2).toUpperCase())}</div>
-                <div>
-                  <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-                    <h3 class="title" style="margin:0"><a href="#author-${esc(a.handle)}" onclick="event.preventDefault();openAuthorProfile('${esc(a.handle)}')">${esc(a.handle)}</a></h3>
-                    ${isThisAdmin ? `<span class="admin-pill">🛡️ Admin</span>` : ""}
-                  </div>
-                  <div class="author">Bias: ${esc(a.bias || "OT7")}</div>
-                </div>
-              </div>
-              <p class="synopsis">${esc(a.bio || "Autora/or en Borahae Archive 💜")}</p>
-            </div>
-            <div class="card-foot">
-              <span>📚 ${works.length} fics · 💜 ${likes}</span>
-              <button class="btn btn-primary btn-sm" onclick="openAuthorProfile('${esc(a.handle)}')">Abrir perfil</button>
-            </div>
-          </article>
-        `;
-      }).join("")}
-    </div>
-  `;
-}
-
-function renderAuthorPage(){
-  const handle = activeAuthorHandle || state.profile.handle;
-  const info = getAuthorRecord(handle);
-  const works = sortStories(state.stories.filter(s => s.author.toLowerCase() === info.handle.toLowerCase()));
-  const totalCaps = works.reduce((acc, s) => acc + (s.chapters ? s.chapters.length : 0), 0);
-  const totalLikes = works.reduce((acc, s) => acc + (s.likes || 0), 0);
-  const isOwn = info.handle.toLowerCase() === (state.profile.handle || "").toLowerCase();
-  const canEditAuthor = isOwn || state.profile.isAdmin;
-
-  return `
-    ${renderAuthorsSubtabs("single")}
-    <section class="reader-box" style="margin-bottom:18px">
-      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-        <div class="avatar-circle" style="width:56px;height:56px;font-size:1.25rem">${esc(info.handle.replace(/^@/,"").slice(0,2).toUpperCase())}</div>
-        <div>
-          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-            <h1 style="font-size:1.45rem">${esc(info.handle)}</h1>
-            ${(isOwn && state.profile.isAdmin) ? `<span class="admin-pill">🛡️ Administradora</span>` : ""}
-          </div>
-          <div class="author">Bias / Wreck: ${esc(info.bias || "OT7")}</div>
-        </div>
-      </div>
-      <p style="margin-top:12px;color:var(--muted);font-size:.95rem">${esc(info.bio || "Autora/or en Borahae Archive 💜")}</p>
-
-      <div class="stats-grid">
-        <div class="stat-card"><div class="stat-num">${works.length}</div><div class="stat-lbl">Historias</div></div>
-        <div class="stat-card"><div class="stat-num">${totalCaps}</div><div class="stat-lbl">Capítulos</div></div>
-        <div class="stat-card"><div class="stat-num">${totalLikes}</div><div class="stat-lbl">Corazones 💜</div></div>
-      </div>
-
-      ${canEditAuthor ? `
-        <details style="margin-top:10px">
-          <summary style="cursor:pointer;font-size:.86rem;font-weight:600;color:var(--accent2)">✏️ Editar bio y bias de ${esc(info.handle)}</summary>
-          <form class="form-grid" style="margin-top:12px" onsubmit="event.preventDefault();saveSingleAuthorForm('${esc(info.handle)}',this)">
-            <div class="form-2">
-              <div>
-                <label>Bias / Wreck</label>
-                <input class="input" name="bias" value="${esc(info.bias || "OT7")}">
-              </div>
-              <div>
-                <label>Biografía</label>
-                <input class="input" name="bio" value="${esc(info.bio || "")}">
-              </div>
-            </div>
-            <div>
-              <button class="btn btn-primary btn-sm" type="submit">Guardar datos de autora</button>
-            </div>
-          </form>
-        </details>
-      ` : ""}
-    </section>
-
-    <h2 style="font-size:1.1rem;margin-bottom:12px">Historias de ${esc(info.handle)} (${works.length})</h2>
-    ${works.length ? `<div class="grid">${works.map(renderCard).join("")}</div>` : `<div class="empty">Esta cuenta todavía no publicó historias en el archivo 💜</div>`}
-  `;
-}
-
-function saveSingleAuthorForm(handle, form){
-  const bias = form.bias.value.trim() || "OT7";
-  const bio = form.bio.value.trim();
-  saveAuthorRecord(handle, bias, bio);
-  if(normHandle(handle).toLowerCase() === (state.profile.handle || "").toLowerCase()){
-    state.profile.bias = bias;
-    state.profile.bio = bio;
-  }
-  saveState();
-  render();
-  toast("Perfil de autora actualizado 💜");
-                        }
   function renderRules(){
   return `
     <div style="margin-bottom:14px">
@@ -800,7 +618,7 @@ function renderReader(){
         <span class="rating ${isAdult?"adult":""}">${esc(s.rating)}</span>
       </div>
       <h1 style="font-size:1.5rem;margin-top:6px">${esc(s.title)}</h1>
-      <div class="author">por <button type="button" class="author-link" onclick="openAuthorProfile('${esc(s.author)}')">${esc(s.author)}</button> · Actualizado ${esc(s.updated)}</div>
+      <div class="author">por ${esc(s.author)} · Actualizado ${esc(s.updated)}</div>
       <p style="margin-top:10px;color:var(--muted);font-size:.92rem">${esc(s.synopsis)}</p>
       <div class="tags" style="margin-top:10px">
         ${(s.warnings||[]).map(w=>`<span class="tag">⚠️ ${esc(w)}</span>`).join("")}
@@ -885,7 +703,8 @@ function addComment(storyId, form){
   render();
   toast("Comentario publicado 💜");
 }
-  function updateWordCounter(){
+
+function updateWordCounter(){
   const bodyEl = document.getElementById("chapterBodyInput");
   const countEl = document.getElementById("wordCountLabel");
   if(!bodyEl || !countEl) return;
@@ -1049,8 +868,6 @@ function saveStoryForm(form){
     st.tags = tags;
     st.synopsis = form.synopsis.value.trim();
     st.updated = today;
-    const rec = getAuthorRecord(cleanAuthor);
-    saveAuthorRecord(cleanAuthor, rec.bias, rec.bio);
     editorMode = "new";
     targetStoryId = null;
     saveState();
@@ -1083,8 +900,6 @@ function saveStoryForm(form){
   const warnings = (form.warnings.value || "").split(",").map(s=>s.trim()).filter(Boolean);
   const tags = (form.tags.value || "").split(",").map(s=>s.trim()).filter(Boolean);
   const cleanAuthor = normHandle(form.author.value || state.profile.handle);
-  const rec = getAuthorRecord(cleanAuthor);
-  saveAuthorRecord(cleanAuthor, rec.bias, rec.bio);
 
   const newStory = {
     id,
@@ -1118,108 +933,4 @@ function saveStoryForm(form){
 }
 
 function renderProfile(){
-  const myStories = state.stories.filter(s => s.author.toLowerCase() === (state.profile.handle||"").toLowerCase());
-  const totalChapters = state.stories.reduce((acc, s) => acc + (s.chapters ? s.chapters.length : 0), 0);
-  const totalComments = state.stories.reduce((acc, s) => acc + (s.comments ? s.comments.length : 0), 0);
-
-  return `
-    <section class="reader-box" style="margin-bottom:18px">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px">
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-          <h1 style="font-size:1.35rem">Mi Perfil ARMY</h1>
-          ${state.profile.isAdmin ? `<span class="admin-pill">🛡️ Administradora</span>` : ""}
-        </div>
-        <button class="btn btn-sm" type="button" onclick="openAuthorProfile('${esc(state.profile.handle)}')">Ver mi página pública ↗</button>
-      </div>
-      <form class="form-grid" onsubmit="event.preventDefault();saveProfileForm(this)">
-        <div class="form-2">
-          <div>
-            <label>Tu @usuario o seudónimo</label>
-            <input class="input" name="handle" value="${esc(state.profile.handle)}" required>
-          </div>
-          <div>
-            <label>Bias / Wreck</label>
-            <input class="input" name="bias" value="${esc(state.profile.bias)}">
-          </div>
-        </div>
-        <div>
-          <label>Biografía corta</label>
-          <input class="input" name="bio" value="${esc(state.profile.bio)}">
-        </div>
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--text)">
-          <input type="checkbox" name="isAdmin" ${state.profile.isAdmin?"checked":""}>
-          Activar modo Administradora (fijar historias, moderar comentarios y ver resumen)
-        </label>
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--text)">
-          <input type="checkbox" name="allowAdult" ${state.prefs.allowAdult?"checked":""}>
-          Mostrar historias +16 / +18 sin pantalla de confirmación previa
-        </label>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn btn-primary" type="submit">Guardar perfil</button>
-          <button class="btn" type="button" onclick="exportJsonBackup()">💾 Respaldar todo (.json)</button>
-          <label class="btn" style="margin:0">📂 Restaurar .json <input type="file" accept=".json,application/json" style="display:none" onchange="importJsonBackup(this.files[0])"></label>
-        </div>
-      </form>
-
-      ${state.profile.isAdmin ? `
-        <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
-          <h2 style="font-size:1.05rem">Panel de Administradora — Resumen del archivo</h2>
-          <div class="stats-grid">
-            <div class="stat-card"><div class="stat-num">${state.stories.length}</div><div class="stat-lbl">Historias totales</div></div>
-            <div class="stat-card"><div class="stat-num">${totalChapters}</div><div class="stat-lbl">Capítulos publicados</div></div>
-            <div class="stat-card"><div class="stat-num">${totalComments}</div><div class="stat-lbl">Comentarios</div></div>
-          </div>
-        </div>
-      ` : ""}
-    </section>
-    <h2 style="font-size:1.1rem;margin-bottom:12px">Mis historias publicadas (${myStories.length})</h2>
-    ${myStories.length ? `<div class="grid">${myStories.map(renderCard).join("")}</div>` : `<div class="empty">Todavía no publicaste historias con ${esc(state.profile.handle)}. Tocá "+ Publicar Fic" para empezar 💜</div>`}
-  `;
-}
-
-function saveProfileForm(form){
-  const clean = normHandle(form.handle.value || "@army_autora");
-  state.profile.handle = clean;
-  state.profile.bias = form.bias.value.trim() || "OT7";
-  state.profile.bio = form.bio.value.trim();
-  state.profile.isAdmin = Boolean(form.isAdmin && form.isAdmin.checked);
-  state.prefs.allowAdult = form.allowAdult.checked;
-  saveAuthorRecord(clean, state.profile.bias, state.profile.bio);
-  saveState();
-  render();
-  toast("Perfil actualizado 💜");
-}
-
-function syncMainNav(){
-  const nav = document.getElementById("mainNav");
-  if(!nav) return;
-  const activeKey = (view === "author") ? "authors" : view;
-  nav.querySelectorAll("[data-nav]").forEach(btn => {
-    btn.classList.toggle("active-tab", btn.getAttribute("data-nav") === activeKey);
-  });
-}
-
-function render(){
-  document.getElementById("savedCount").textContent = state.saved.length;
-  syncMainNav();
-  const app = document.getElementById("app");
-  if(view === "reader") app.innerHTML = renderReader();
-  else if(view === "editor") app.innerHTML = renderEditor();
-  else if(view === "profile") app.innerHTML = renderProfile();
-  else if(view === "authors") app.innerHTML = renderAuthorsDirectory();
-  else if(view === "author") app.innerHTML = renderAuthorPage();
-  else if(view === "rules") app.innerHTML = renderRules();
-  else if(view === "saved"){
-    const savedList = sortStories(state.stories.filter(s => state.saved.includes(s.id)));
-    app.innerHTML = renderArchive(savedList, "Mi biblioteca guardada");
-  }else{
-    app.innerHTML = renderArchive(getFilteredStories());
-  }
-  updateReadProgress();
-}
-
-applyPrefs();
-render();
-</script>
-</body>
-</html>
+  const myStories = state.stories.filter(s => s.au
