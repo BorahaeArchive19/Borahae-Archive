@@ -1,404 +1,667 @@
 <!DOCTYPE html>
-<html lang="es" class="dark">
+<html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Borahae Archive | Plataforma de Fanfics & Omegaverse ARMY</title>
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Google Fonts: Plus Jakarta Sans (UI) & Lora / Merriweather (Lectura literaria) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-            serif: ['Lora', 'Georgia', 'serif'],
-          },
-          colors: {
-            plum: {
-              950: '#0b0712',
-              900: '#130c20',
-              850: '#191029',
-              800: '#221638',
-              700: '#312050',
-            },
-            bora: {
-              300: '#d8b4fe',
-              400: '#c084fc',
-              500: '#a855f7',
-              600: '#9333ea',
-              700: '#7e22ce',
-            }
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    /* Temas globales y de lectura */
-    body {
-      background-color: #0b0712;
-      color: #f4effc;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-
-    /* Estilos específicos del contenedor de lectura */
-    .reader-theme-dark {
-      background-color: #0e0917;
-      color: #ede6f7;
-    }
-    .reader-theme-dark .reader-card {
-      background-color: #171026;
-      border-color: rgba(168, 85, 247, 0.2);
-    }
-    .reader-theme-dark .reader-input {
-      background-color: #211736;
-      border-color: rgba(168, 85, 247, 0.25);
-      color: #f4effc;
-    }
-
-    .reader-theme-sepia {
-      background-color: #f5eedc;
-      color: #2c2219;
-    }
-    .reader-theme-sepia .reader-card {
-      background-color: #fbf6ea;
-      border-color: #dfd2b8;
-    }
-    .reader-theme-sepia .reader-input {
-      background-color: #ede2ca;
-      border-color: #d3c2a3;
-      color: #2c2219;
-    }
-
-    .reader-theme-light {
-      background-color: #faf9fd;
-      color: #191426;
-    }
-    .reader-theme-light .reader-card {
-      background-color: #ffffff;
-      border-color: #e4def2;
-    }
-    .reader-theme-light .reader-input {
-      background-color: #f1eef9;
-      border-color: #d8cfec;
-      color: #191426;
-    }
-
-    /* Scrollbar estilizada */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(168, 85, 247, 0.35);
-      border-radius: 9999px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(168, 85, 247, 0.65);
-    }
-
-    /* Animación corazón Kudos */
-    @keyframes floatHeart {
-      0% { opacity: 1; transform: translateY(0) scale(1); }
-      100% { opacity: 0; transform: translateY(-50px) scale(1.45); }
-    }
-    .animate-heart {
-      animation: floatHeart 0.9s ease-out forwards;
-      pointer-events: none;
-    }
-
-    .hero-glow {
-      background-image: radial-gradient(circle at 12% 30%, rgba(168, 85, 247, 0.22) 0%, transparent 48%),
-                        radial-gradient(circle at 88% 70%, rgba(126, 34, 206, 0.25) 0%, transparent 52%);
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Borahae Archive — Fanfics, One-Shots & Omegaverse BTS</title>
+<style>
+:root{--bg:#0d0a14;--surface:#171224;--surface2:#221a36;--text:#f3eefc;--muted:#b4a7cc;--accent:#9d4edd;--accent2:#c77dff;--border:rgba(199,125,255,.18);--danger:#ff5c8a;--ok:#5ce1a6;--font-ui:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;--font-read:Georgia,Cambria,"Times New Roman",serif;--read-size:18px}
+body.theme-cream{--bg:#f6f1e7;--surface:#fffdf8;--surface2:#efe7d6;--text:#231c2e;--muted:#655a78;--accent:#7b2cbf;--accent2:#5a189a;--border:rgba(90,24,154,.16)}
+body.theme-light{--bg:#f8f6fc;--surface:#ffffff;--surface2:#efe9fa;--text:#1b1526;--muted:#5e5273;--accent:#7b2cbf;--accent2:#9d4edd;--border:rgba(123,44,191,.16)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font-ui);line-height:1.55;min-height:100vh;transition:background .2s,color .2s}
+a{color:var(--accent2);text-decoration:none}
+button,input,select,textarea{font-family:inherit;color:inherit}
+button{cursor:pointer;border:none;background:none}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px 48px}
+header{position:sticky;top:0;z-index:30;backdrop-filter:blur(12px);background:color-mix(in srgb,var(--bg) 86%,transparent);border-bottom:1px solid var(--border)}
+.nav{max-width:1120px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.1rem;letter-spacing:.3px}
+.brand-badge{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:1rem}
+.nav-btns{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{padding:8px 14px;border-radius:10px;font-size:.88rem;font-weight:600;background:var(--surface2);border:1px solid var(--border);transition:.15s}
+.btn:hover{border-color:var(--accent2);transform:translateY(-1px)}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none}
+.btn-sm{padding:6px 10px;font-size:.8rem;border-radius:8px}
+.hero{margin:20px 0;padding:22px;border-radius:18px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 20%,var(--surface)),var(--surface));border:1px solid var(--border)}
+.hero h1{font-size:1.55rem;margin-bottom:6px}
+.hero p{color:var(--muted);font-size:.95rem;max-width:720px}
+.controls{display:grid;gap:12px;margin-bottom:18px}
+.search-row{display:flex;gap:10px;flex-wrap:wrap}
+.input,.select,.textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 13px;font-size:.92rem}
+.input:focus,.select:focus,.textarea:focus{outline:2px solid color-mix(in srgb,var(--accent2) 55%,transparent);border-color:var(--accent2)}
+.chips{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.chip{padding:6px 12px;border-radius:999px;font-size:.8rem;font-weight:600;background:var(--surface);border:1px solid var(--border);color:var(--muted)}
+.chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;gap:12px}
+.card:hover{border-color:var(--accent2)}
+.meta-top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:.78rem;color:var(--muted);flex-wrap:wrap}
+.rating{padding:2px 8px;border-radius:6px;font-weight:700;background:var(--surface2);color:var(--accent2)}
+.rating.adult{background:color-mix(in srgb,var(--danger) 20%,transparent);color:var(--danger)}
+.title{font-size:1.15rem;font-weight:700;margin:4px 0}
+.author{font-size:.84rem;color:var(--muted)}
+.synopsis{font-size:.88rem;color:var(--muted);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:.74rem;padding:3px 8px;border-radius:7px;background:var(--surface2);color:var(--text)}
+.card-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;padding-top:10px;border-top:1px solid var(--border);font-size:.82rem;color:var(--muted)}
+.reader-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:22px}
+.reader-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;padding:12px;border-radius:12px;background:var(--surface2);margin:14px 0}
+.chapter-body{font-family:var(--font-read);font-size:var(--read-size);line-height:1.85;white-space:pre-line;margin:18px 0}
+.chapter-body.sans{font-family:var(--font-ui)}
+.note-box{background:var(--surface2);border-left:4px solid var(--accent2);padding:12px 14px;border-radius:10px;margin:12px 0;font-size:.9rem}
+.warn-gate{text-align:center;padding:32px 18px;border-radius:14px;background:var(--surface2);border:1px solid var(--border);margin:14px 0}
+.comments{margin-top:24px;padding-top:18px;border-top:1px solid var(--border)}
+.comment{padding:10px 12px;border-radius:10px;background:var(--surface2);margin-top:8px;font-size:.88rem}
+.form-grid{display:grid;gap:12px;max-width:740px}
+.form-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+label{display:block;font-size:.84rem;font-weight:600;margin-bottom:4px;color:var(--muted)}
+.toast{position:fixed;bottom:18px;right:18px;z-index:60;background:var(--accent);color:#fff;padding:10px 16px;border-radius:12px;font-size:.88rem;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.35);display:none}
+.empty{text-align:center;padding:40px 16px;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:16px}
+@media(max-width:600px){.hero h1{font-size:1.3rem}.reader-box{padding:15px}}
+</style>
 </head>
-<body class="min-h-screen flex flex-col antialiased selection:bg-bora-600 selection:text-white">
-
-  <!-- Notificación Toast Flotante -->
-  <div id="toast" class="fixed bottom-5 right-5 z-[60] transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
-    <div class="bg-plum-800 text-white px-4 py-3 rounded-2xl shadow-2xl border border-bora-500/40 flex items-center gap-2.5 text-sm font-medium backdrop-blur-md">
-      <span id="toast-icon">💜</span>
-      <span id="toast-text">Listo</span>
+<body>
+<header>
+  <div class="nav">
+    <button class="brand" onclick="setView('archive')">
+      <span class="brand-badge">💜</span>
+      <span>Borahae Archive</span>
+    </button>
+    <div class="nav-btns">
+      <button class="btn btn-sm" onclick="setView('archive')">Archivo</button>
+      <button class="btn btn-sm" onclick="setView('saved')">Guardados (<span id="savedCount">0</span>)</button>
+      <button class="btn btn-sm" onclick="setView('profile')">Mi Perfil</button>
+      <button class="btn btn-primary btn-sm" onclick="openEditor()">+ Publicar Fic</button>
     </div>
   </div>
+</header>
 
-  <!-- ==================== NAVBAR PRINCIPAL ==================== -->
-  <header class="sticky top-0 z-30 bg-plum-950/85 backdrop-blur-xl border-b border-bora-500/15">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
-      
-      <!-- Logo -->
-      <button onclick="navigateTo('explore')" class="flex items-center gap-2.5 text-left group focus:outline-none">
-        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-bora-500 via-purple-600 to-indigo-800 flex items-center justify-center shadow-lg shadow-bora-600/30 group-hover:scale-105 transition-transform">
-          <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
+<main class="wrap" id="app"></main>
+<div class="toast" id="toast"></div>
+<script>
+const STORAGE_KEY = "borahae_archive_v1";
+const SHIPS = ["Todos","Yoonmin","Taekook","Namjin","Sope","Vmin","Jikook","OT7","Reader/OC"];
+const CATS = ["Todos","Omegaverse","One-Shot","AU","Angst","Fluff","Misterio"];
+const RATINGS = ["Todo público","+13 Teen","+16","+18 Explícito"];
+
+const DEFAULT_STORIES = [
+  {
+    id:"fic-1",
+    title:"Lluvia en el cuarto de ensayo",
+    author:"@min_borahae",
+    ship:"Yoonmin",
+    category:"One-Shot",
+    rating:"+13 Teen",
+    warnings:["Final feliz"],
+    tags:["Fluff","Invierno","Café","Confesión"],
+    synopsis:"Después de horas practicando una coreografía nueva, un corte de luz deja a Yoongi y Jimin atrapados en el estudio con un termo de té y palabras que venían guardando hace meses.",
+    status:"Completada",
+    updated:"2026-10-12",
+    likes:48,
+    chapters:[
+      {
+        title:"Capítulo único: El ruido de la lluvia",
+        authorNote:"Escrito con lluvia de fondo y café tibio. ¡Espero que les abrigue el corazón!",
+        song:"BTS — Rain",
+        body:"La lluvia golpeaba contra los ventanales altos del piso inferior con un ritmo parejo que parecía marcar el compás de lo que ninguno de los dos se animaba a decir.\n\nJimin se dejó caer sobre la colchoneta, estirando las piernas cansadas, mientras Yoongi revisaba la pista en el parlante portátil hasta que la luz parpadeó dos veces y se apagó por completo.\n\n—Bueno —murmuró Yoongi en la penumbra, sin moverse de su lugar—. Parece que hoy no hay más ensayos.\n\nJimin soltó una risa bajita y buscó a tientas la botella de agua. Cuando sus dedos rozaron los de Yoongi, ninguno apartó la mano de inmediato."
+      }
+    ],
+    comments:[
+      {user:"@army_nube",text:"Qué paz transmite este one-shot, necesitaba algo así hoy 💜",date:"2026-10-13"}
+    ]
+  },
+  {
+    id:"fic-2",
+    title:"Ceniza y pétalos de loto",
+    author:"@luna_omega",
+    ship:"Taekook",
+    category:"Omegaverse",
+    rating:"+18 Explícito",
+    warnings:["Angst fuerte","Nudos / Celo"],
+    tags:["Omegaverse","Alma gemela","Reencuentro","Supresores"],
+    synopsis:"En una Seúl dividida por los pactos entre clanes, un omega que oculta su aroma tras supresores vuelve a cruzarse con el alfa que juró protegerlo cinco inviernos atrás.",
+    status:"En emisión",
+    updated:"2026-10-18",
+    likes:92,
+    chapters:[
+      {
+        title:"Capítulo 1: El aroma que no se olvida",
+        authorNote:"Advertencia: temas intensos de dinámica alfa/omega y reencuentro con herida previa.",
+        song:"Jungkook — Still With You",
+        body:"Los supresores de nueva generación prometían borrar cualquier rastro de esencia en menos de veinte minutos, pero nadie hablaba de lo que pasaba cuando el instinto reconocía la voz antes que el aroma.\n\nTaehyung cruzó el umbral del salón sin mirar a los costados, hasta que el aire cambió apenas un grado y su respiración se detuvo."
+      },
+      {
+        title:"Capítulo 2: Promesa bajo cero",
+        authorNote:"Gracias por leer y dejar sus teorías sobre lo que pasó hace cinco años.",
+        song:"V — Winter Bear",
+        body:"La fiebre del celo venía adelantándose desde el amanecer, y Jungkook se negó a dejarlo solo en la sala de descanso a pesar de las reglas estrictas del distrito.\n\n—No tenés que decirme nada hoy —dijo en voz baja, acomodando la manta sobre sus hombros—. Solo respirá."
+      }
+    ],
+    comments:[
+      {user:"@kookie_violeta",text:"¡Ese final del capítulo 2 me dejó sin aire! Esperando el próximo.",date:"2026-10-19"}
+    ]
+  },
+  {
+    id:"fic-3",
+    title:"Frecuencia de medianoche",
+    author:"@seoul_diario",
+    ship:"Namjin",
+    category:"AU",
+    rating:"Todo público",
+    warnings:["Final feliz"],
+    tags:["Radio","Slice of life","Madrugada","Slow burn"],
+    synopsis:"Una radio independiente de madrugada conecta a un conductor nocturno con el panadero de la esquina que llama cada noche para pedir una canción distinta.",
+    status:"Completada",
+    updated:"2026-10-05",
+    likes:63,
+    chapters:[
+      {
+        title:"Capítulo 1: Dial 98.7",
+        authorNote:"Un AU tranquilo para leer de noche con auriculares.",
+        song:"Jin — Moon",
+        body:"A las 01:14 de la madrugada, la línea de oyentes de la radio casi nunca sonaba. Casi nunca.\n\n—Hola, 98.7 —dijo una voz serena, acompañada por el tintineo suave de una cuchara contra una taza—. ¿Todavía queda lugar para un pedido fuera de horario?"
+      }
+    ],
+    comments:[]
+  }
+];
+
+const DEFAULT_STATE = {
+  profile:{handle:"@army_autora",bias:"OT7",bio:"Escribiendo one-shots, AUs y sagas Omegaverse con amor ARMY 💜"},
+  prefs:{theme:"dark",font:"serif",fontSize:18,allowAdult:false},
+  saved:[],
+  stories:DEFAULT_STORIES
+};
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return structuredClone(DEFAULT_STATE);
+    const parsed = JSON.parse(raw);
+    return {
+      profile:{...DEFAULT_STATE.profile,...(parsed.profile||{})},
+      prefs:{...DEFAULT_STATE.prefs,...(parsed.prefs||{})},
+      saved:Array.isArray(parsed.saved)?parsed.saved:[],
+      stories:Array.isArray(parsed.stories)&&parsed.stories.length?parsed.stories:structuredClone(DEFAULT_STATE.stories)
+    };
+  }catch(e){
+    return structuredClone(DEFAULT_STATE);
+  }
+}
+
+let state = loadState();
+let view = "archive";
+let filterShip = "Todos";
+let filterCat = "Todos";
+let searchQuery = "";
+let activeStoryId = null;
+let activeChapterIdx = 0;
+let adultConfirmedId = null;
+let editStoryId = null;
+
+function saveState(){
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+  document.getElementById("savedCount").textContent = state.saved.length;
+  applyPrefs();
+}
+
+function applyPrefs(){
+  document.body.classList.remove("theme-cream","theme-light");
+  if(state.prefs.theme === "cream") document.body.classList.add("theme-cream");
+  if(state.prefs.theme === "light") document.body.classList.add("theme-light");
+  document.documentElement.style.setProperty("--read-size", state.prefs.fontSize + "px");
+}
+
+function toast(msg){
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.style.display = "block";
+  clearTimeout(toast._t);
+  toast._t = setTimeout(()=>{ el.style.display = "none"; }, 2400);
+}
+
+function esc(str=""){
+  return String(str).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+}
+
+function setView(nextView){
+  view = nextView;
+  render();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function openStory(id, chIdx=0){
+  activeStoryId = id;
+  activeChapterIdx = chIdx;
+  view = "reader";
+  render();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function openEditor(storyId=null){
+  editStoryId = storyId;
+  view = "editor";
+  render();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function toggleSaved(id){
+  if(state.saved.includes(id)){
+    state.saved = state.saved.filter(x => x !== id);
+    toast("Quitado de Guardados");
+  }else{
+    state.saved.push(id);
+    toast("Guardado en tu biblioteca 💜");
+  }
+  saveState();
+  if(view === "saved" || view === "reader") render();
+}
+
+function toggleLike(id){
+  const st = state.stories.find(s => s.id === id);
+  if(!st) return;
+  st.likes = (st.likes || 0) + 1;
+  saveState();
+  render();
+  toast("¡Enviaste amor a esta historia! 💜");
+}
+
+function downloadChapterTxt(story, chIdx){
+  const ch = story.chapters[chIdx] || story.chapters[0];
+  const content = `${story.title}\nAutor/a: ${story.author}\nShip: ${story.ship} | Categoría: ${story.category} | Clasificación: ${story.rating}\n${ch.title}\n${ch.song ? "Banda sonora: " + ch.song + "\n" : ""}${ch.authorNote ? "Notas: " + ch.authorNote + "\n" : ""}\n${ch.body}`;
+  const blob = new Blob([content],{type:"text/plain;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${story.title.toLowerCase().replace(/[^a-z0-9]+/gi,"-")}-cap-${chIdx+1}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast("Capítulo descargado (.txt)");
+}
+
+function exportJsonBackup(){
+  const blob = new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "borahae-archive-respaldo.json";
+  a.click();
+  URL.revokeObjectURL(url);
+  toast("Respaldo .json descargado");
+}
+
+function importJsonBackup(file){
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const data = JSON.parse(reader.result);
+      if(!Array.isArray(data.stories)) throw new Error("Formato inválido");
+      state = {
+        profile:{...DEFAULT_STATE.profile,...(data.profile||{})},
+        prefs:{...DEFAULT_STATE.prefs,...(data.prefs||{})},
+        saved:Array.isArray(data.saved)?data.saved:[],
+        stories:data.stories
+      };
+      saveState();
+      render();
+      toast("Respaldo restaurado con éxito 💜");
+    }catch(e){
+      toast("No se pudo leer el archivo .json");
+    }
+  };
+  reader.readAsText(file);
+}
+
+function getFilteredStories(){
+  const q = searchQuery.trim().toLowerCase();
+  return state.stories.filter(s => {
+    const matchShip = filterShip === "Todos" || s.ship === filterShip;
+    const matchCat = filterCat === "Todos" || s.category === filterCat;
+    const hay = `${s.title} ${s.author} ${s.ship} ${s.category} ${s.synopsis} ${(s.tags||[]).join(" ")} ${(s.warnings||[]).join(" ")}`.toLowerCase();
+    const matchQ = !q || hay.includes(q);
+    return matchShip && matchCat && matchQ;
+  });
+}
+
+function renderCard(s){
+  const isAdult = s.rating.startsWith("+16") || s.rating.startsWith("+18");
+  const isSaved = state.saved.includes(s.id);
+  return `
+    <article class="card">
+      <div>
+        <div class="meta-top">
+          <span>${esc(s.ship)} · ${esc(s.category)} · ${s.chapters.length} cap.</span>
+          <span class="rating ${isAdult?"adult":""}">${esc(s.rating)}</span>
         </div>
-        <div>
-          <span class="font-extrabold text-lg sm:text-xl tracking-tight bg-gradient-to-r from-bora-300 via-purple-200 to-indigo-300 bg-clip-text text-transparent block leading-none">
-            Borahae Archive
-          </span>
-          <span class="text-[10px] text-bora-300/70 tracking-widest uppercase font-semibold">ARMY Fanfic & Omegaverse</span>
+        <h3 class="title"><a href="#${esc(s.id)}" onclick="event.preventDefault();openStory('${esc(s.id)}')">${esc(s.title)}</a></h3>
+        <div class="author">por ${esc(s.author)} · ${esc(s.status)}</div>
+        <p class="synopsis" style="margin-top:8px">${esc(s.synopsis)}</p>
+        <div class="tags" style="margin-top:10px">
+          ${(s.warnings||[]).map(w=>`<span class="tag">⚠️ ${esc(w)}</span>`).join("")}
+          ${(s.tags||[]).slice(0,4).map(t=>`<span class="tag">#${esc(t)}</span>`).join("")}
         </div>
-      </button>
-
-      <!-- Navegación Desktop -->
-      <nav class="hidden md:flex items-center gap-1 bg-plum-900/90 p-1.5 rounded-2xl border border-bora-500/15">
-        <button onclick="navigateTo('explore')" id="nav-explore" class="nav-tab px-4 py-1.5 rounded-xl text-sm font-semibold transition-all bg-bora-600 text-white shadow-sm flex items-center gap-2">
-          <i data-lucide="compass" class="w-4 h-4"></i>
-          <span>Explorar</span>
-        </button>
-        <button onclick="navigateTo('library')" id="nav-library" class="nav-tab px-4 py-1.5 rounded-xl text-sm font-semibold transition-all text-purple-200/75 hover:text-white flex items-center gap-2">
-          <i data-lucide="bookmark" class="w-4 h-4"></i>
-          <span>Mi Biblioteca</span>
-          <span id="lib-badge" class="text-xs px-1.5 py-0.5 rounded-full bg-bora-500/25 text-bora-300 font-bold">0</span>
-        </button>
-        <button onclick="navigateTo('profile')" id="nav-profile" class="nav-tab px-4 py-1.5 rounded-xl text-sm font-semibold transition-all text-purple-200/75 hover:text-white flex items-center gap-2">
-          <i data-lucide="user" class="w-4 h-4"></i>
-          <span>Mi Perfil</span>
-        </button>
-      </nav>
-
-      <!-- Botón Acción Principal: + Escribir -->
-      <div class="flex items-center gap-2.5">
-        <button onclick="navigateTo('studio')" class="px-4 py-2 rounded-2xl bg-gradient-to-r from-bora-600 to-purple-600 hover:from-bora-500 hover:to-purple-500 text-white font-bold text-xs sm:text-sm shadow-lg shadow-bora-600/30 flex items-center gap-1.5 transition-all active:scale-95">
-          <i data-lucide="pen-tool" class="w-4 h-4"></i>
-          <span>+ Escribir</span>
-        </button>
       </div>
-    </div>
-
-    <!-- Navegación Móvil Inferior del Header -->
-    <div class="md:hidden flex border-t border-bora-500/15 px-3 py-1.5 gap-1.5 bg-plum-900/60">
-      <button onclick="navigateTo('explore')" id="mob-explore" class="flex-1 py-1.5 rounded-xl text-xs font-bold text-center bg-bora-600 text-white">
-        Explorar
-      </button>
-      <button onclick="navigateTo('library')" id="mob-library" class="flex-1 py-1.5 rounded-xl text-xs font-bold text-center text-purple-200/75">
-        Biblioteca (<span id="mob-lib-badge">0</span>)
-      </button>
-      <button onclick="navigateTo('profile')" id="mob-profile" class="flex-1 py-1.5 rounded-xl text-xs font-bold text-center text-purple-200/75">
-        Mi Perfil
-      </button>
-    </div>
-  </header>
-
-  <!-- ==================== CONTENIDO PRINCIPAL ==================== -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
-
-    <!-- ==================== VISTA 1: EXPLORAR (CATÁLOGO) ==================== -->
-    <section id="view-explore" class="space-y-6">
-      
-      <!-- Hero Banner -->
-      <div class="hero-glow bg-plum-900/90 border border-bora-500/20 rounded-3xl p-6 sm:p-8 relative overflow-hidden">
-        <div class="max-w-3xl space-y-3 relative z-10">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-bora-500/15 border border-bora-400/25 text-bora-300 text-xs font-semibold">
-            <span>💜 Archivo literario libre de censura para ARMY</span>
-          </div>
-          <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
-            Historias, One-Shots y Sagas Omegaverse de BTS en un solo lugar.
-          </h1>
-          <p class="text-sm sm:text-base text-purple-200/80 leading-relaxed">
-            Explorá por ship, tropo o clasificación. Guardá tus sagas favoritas, escuchá la banda sonora recomendada de cada capítulo y publicá tus propias obras.
-          </p>
+      <div class="card-foot">
+        <span>💜 ${s.likes||0} · 💬 ${(s.comments||[]).length}</span>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-sm" onclick="toggleSaved('${esc(s.id)}')">${isSaved?"Guardado":"Guardar"}</button>
+          <button class="btn btn-primary btn-sm" onclick="openStory('${esc(s.id)}')">Leer</button>
         </div>
       </div>
+    </article>
+  `;
+}
 
-      <!-- Panel de Búsqueda y Filtros Multidimensionales -->
-      <div class="bg-plum-900/80 border border-bora-500/20 rounded-3xl p-4 sm:p-6 space-y-5 shadow-xl">
-        <!-- Barra de Búsqueda + Orden -->
-        <div class="flex flex-col md:flex-row gap-3">
-          <div class="relative flex-1">
-            <i data-lucide="search" class="w-4 h-4 text-bora-300/60 absolute left-4 top-1/2 -translate-y-1/2"></i>
-            <input 
-              type="text" 
-              id="search-input" 
-              oninput="applyFilters()" 
-              placeholder="Buscar por título, autora (@handle), sinopsis o etiquetas (#AlfaPuro, #SlowBurn)..." 
-              class="w-full bg-plum-850 border border-bora-500/25 rounded-2xl pl-11 pr-4 py-3 text-sm text-white placeholder-purple-300/40 focus:outline-none focus:ring-2 focus:ring-bora-500"
-            />
-          </div>
-
-          <div class="flex flex-wrap sm:flex-nowrap gap-2.5">
-            <!-- Filtro Clasificación -->
-            <select id="filter-rating" onchange="applyFilters()" class="bg-plum-850 border border-bora-500/25 rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-purple-100 focus:outline-none focus:ring-2 focus:ring-bora-500">
-              <option value="Todas">Clasificación: Todas</option>
-              <option value="General">General (ATP)</option>
-              <option value="+13">+13 Teen</option>
-              <option value="+16">+16 Mature</option>
-              <option value="+18">+18 Explícito</option>
-            </select>
-
-            <!-- Filtro Estado -->
-            <select id="filter-status" onchange="applyFilters()" class="bg-plum-850 border border-bora-500/25 rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-purple-100 focus:outline-none focus:ring-2 focus:ring-bora-500">
-              <option value="Todos">Estado: Todos</option>
-              <option value="En curso">⏳ En curso</option>
-              <option value="Completado">✅ Completado</option>
-            </select>
-
-            <!-- Ordenar -->
-            <select id="sort-select" onchange="applyFilters()" class="bg-plum-850 border border-bora-500/25 rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-purple-100 focus:outline-none focus:ring-2 focus:ring-bora-500">
-              <option value="recent">🕒 Recientes</option>
-              <option value="kudos">💜 Más Kudos</option>
-              <option value="chapters">📚 Más capítulos</option>
-              <option value="words">📖 Más palabras</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Filtro Ships -->
-        <div class="space-y-2">
-          <span class="text-[11px] font-bold uppercase tracking-wider text-bora-300/70 block">Ships & Dinámicas</span>
-          <div id="ship-pills" class="flex flex-wrap gap-1.5"></div>
-        </div>
-
-        <!-- Filtro Categoría / Género -->
-        <div class="space-y-2">
-          <span class="text-[11px] font-bold uppercase tracking-wider text-bora-300/70 block">Categoría / Género</span>
-          <div id="genre-pills" class="flex flex-wrap gap-1.5"></div>
-        </div>
-      </div>
-
-      <!-- Barra de resultados -->
-      <div class="flex items-center justify-between px-1">
-        <p class="text-sm text-purple-200/80">
-          Mostrando <strong id="catalog-count" class="text-bora-300 font-bold">0</strong> historias
-        </p>
-        <button id="clear-filters-btn" onclick="resetFilters()" class="hidden text-xs font-semibold text-bora-400 hover:text-bora-300 flex items-center gap-1">
-          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
-          <span>Limpiar filtros</span>
-        </button>
-      </div>
-
-      <!-- Grilla de Tarjetas -->
-      <div id="catalog-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
-
-      <!-- Sin resultados -->
-      <div id="catalog-empty" class="hidden bg-plum-900/80 border border-bora-500/20 rounded-3xl p-12 text-center space-y-3">
-        <div class="w-14 h-14 rounded-2xl bg-bora-500/15 text-bora-300 flex items-center justify-center mx-auto">
-          <i data-lucide="search-x" class="w-7 h-7"></i>
-        </div>
-        <h3 class="text-lg font-bold text-white">No encontramos historias con esa combinación</h3>
-        <p class="text-sm text-purple-200/70 max-w-md mx-auto">Probá quitando alguno de los filtros activos o animate a escribir vos misma esta historia.</p>
-        <button onclick="resetFilters()" class="px-5 py-2.5 rounded-2xl bg-bora-600 hover:bg-bora-500 text-white text-sm font-semibold">
-          Mostrar todo el catálogo
-        </button>
-      </div>
+function renderArchive(list, titleText="Historias destacadas de ARMY"){
+  const shipChips = SHIPS.map(sh => `<button class="chip ${filterShip===sh?"active":""}" onclick="filterShip='${sh}';render()">${sh}</button>`).join("");
+  const catChips = CATS.map(ct => `<button class="chip ${filterCat===ct?"active":""}" onclick="filterCat='${ct}';render()">${ct}</button>`).join("");
+  return `
+    <section class="hero">
+      <h1>💜 Borahae Archive</h1>
+      <p>Tu archivo de fanfics, one-shots, AUs y sagas Omegaverse de BTS. Leé con comodidad en modo nocturno o crema, filtrá por ship y categoría, y guardá tus historias favoritas.</p>
     </section>
-
-    <!-- ==================== VISTA 2: MI BIBLIOTECA ==================== -->
-    <section id="view-library" class="hidden space-y-6">
-      <div class="bg-plum-900/90 border border-bora-500/20 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 class="text-2xl sm:text-3xl font-extrabold text-white flex items-center gap-2.5">
-            <i data-lucide="bookmark" class="w-7 h-7 text-bora-400"></i>
-            <span>Mi Biblioteca ARMY</span>
-          </h2>
-          <p class="text-sm text-purple-200/75 mt-1">Tus fics guardados y tu historial de lectura reciente para retomar justo donde dejaste.</p>
-        </div>
-        <button onclick="navigateTo('explore')" class="px-4 py-2.5 rounded-2xl bg-bora-600 hover:bg-bora-500 text-white text-sm font-bold self-start sm:self-auto">
-          Explorar catálogo
-        </button>
+    <section class="controls">
+      <div class="search-row">
+        <input class="input" type="search" placeholder="Buscar por título, autora, tag, advertencia o trama..." value="${esc(searchQuery)}" oninput="searchQuery=this.value;render()">
       </div>
-
-      <!-- Historial de Lectura Reciente -->
-      <div id="history-section" class="hidden space-y-3">
-        <h3 class="text-sm font-bold uppercase tracking-wider text-bora-300 flex items-center gap-2 px-1">
-          <i data-lucide="history" class="w-4 h-4"></i>
-          <span>Continuar leyendo (Historial reciente)</span>
-        </h3>
-        <div id="history-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-      </div>
-
-      <!-- Guardados -->
-      <div class="space-y-3">
-        <h3 class="text-sm font-bold uppercase tracking-wider text-bora-300 flex items-center gap-2 px-1">
-          <i data-lucide="heart" class="w-4 h-4"></i>
-          <span>Historias Guardadas (<span id="saved-total-count">0</span>)</span>
-        </h3>
-        <div id="library-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
-        <div id="library-empty" class="hidden bg-plum-900/70 border border-bora-500/20 rounded-3xl p-12 text-center space-y-3">
-          <div class="text-4xl">📚</div>
-          <h4 class="text-lg font-bold text-white">Tu lista de guardados está vacía</h4>
-          <p class="text-sm text-purple-200/70 max-w-md mx-auto">Tocá el ícono de marcador en cualquier historia para guardarla acá.</p>
-        </div>
-      </div>
+      <div class="chips"><span style="font-size:.78rem;color:var(--muted)">Ships:</span>${shipChips}</div>
+      <div class="chips"><span style="font-size:.78rem;color:var(--muted)">Género:</span>${catChips}</div>
     </section>
+    <h2 style="font-size:1.1rem;margin-bottom:12px">${esc(titleText)} (${list.length})</h2>
+    ${list.length ? `<div class="grid">${list.map(renderCard).join("")}</div>` : `<div class="empty">No encontramos historias con ese filtro. Probá limpiar la búsqueda o publicar la tuya 💜</div>`}
+  `;
+}
+  function renderReader(){
+  const s = state.stories.find(x => x.id === activeStoryId) || state.stories[0];
+  if(!s) return renderArchive(getFilteredStories());
+  const chIdx = Math.min(Math.max(0, activeChapterIdx), s.chapters.length - 1);
+  const ch = s.chapters[chIdx];
+  const isAdult = s.rating.startsWith("+16") || s.rating.startsWith("+18");
+  const blocked = isAdult && !state.prefs.allowAdult && adultConfirmedId !== s.id;
+  const isSaved = state.saved.includes(s.id);
 
-    <!-- ==================== VISTA 3: MI PERFIL & RESPALDO ==================== -->
-    <section id="view-profile" class="hidden max-w-4xl mx-auto space-y-6">
-      
-      <!-- Tarjeta de Perfil Editable -->
-      <div class="bg-plum-900/90 border border-bora-500/20 rounded-3xl p-6 sm:p-8 space-y-6">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-bora-500/15 pb-5">
-          <div class="flex items-center gap-4">
-            <div class="w-16 h-16 rounded-3xl bg-gradient-to-br from-bora-500 to-indigo-700 flex items-center justify-center text-2xl font-extrabold text-white shadow-lg">
-              💜
+  return `
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+      <button class="btn btn-sm" onclick="setView('archive')">← Volver al archivo</button>
+      <button class="btn btn-sm" onclick="openEditor('${esc(s.id)}')">+ Agregar capítulo / Editar</button>
+      <button class="btn btn-sm" onclick="toggleSaved('${esc(s.id)}')">${isSaved?"🔖 Guardada":"🔖 Guardar"}</button>
+      <button class="btn btn-sm" onclick="toggleLike('${esc(s.id)}')">💜 Dar amor (${s.likes||0})</button>
+      <button class="btn btn-sm" onclick="downloadChapterTxt(state.stories.find(x=>x.id==='${esc(s.id)}'), ${chIdx})">⬇️ Descargar .txt</button>
+    </div>
+    <article class="reader-box">
+      <div class="meta-top">
+        <span>${esc(s.ship)} · ${esc(s.category)} · ${esc(s.status)}</span>
+        <span class="rating ${isAdult?"adult":""}">${esc(s.rating)}</span>
+      </div>
+      <h1 style="font-size:1.5rem;margin-top:6px">${esc(s.title)}</h1>
+      <div class="author">por ${esc(s.author)} · Actualizado ${esc(s.updated)}</div>
+      <p style="margin-top:10px;color:var(--muted);font-size:.92rem">${esc(s.synopsis)}</p>
+      <div class="tags" style="margin-top:10px">
+        ${(s.warnings||[]).map(w=>`<span class="tag">⚠️ ${esc(w)}</span>`).join("")}
+        ${(s.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join("")}
+      </div>
+
+      <div class="reader-toolbar">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <select class="select" style="width:auto;padding:6px 10px" onchange="activeChapterIdx=Number(this.value);render()">
+            ${s.chapters.map((c,i)=>`<option value="${i}" ${i===chIdx?"selected":""}>${esc(c.title || "Capítulo "+(i+1))}</option>`).join("")}
+          </select>
+          <button class="btn btn-sm" ${chIdx===0?"disabled":""} onclick="activeChapterIdx=${chIdx-1};render()">← Anterior</button>
+          <button class="btn btn-sm" ${chIdx>=s.chapters.length-1?"disabled":""} onclick="activeChapterIdx=${chIdx+1};render()">Siguiente →</button>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+          <button class="btn btn-sm" onclick="state.prefs.theme='dark';saveState();render()">Noche</button>
+          <button class="btn btn-sm" onclick="state.prefs.theme='cream';saveState();render()">Crema</button>
+          <button class="btn btn-sm" onclick="state.prefs.theme='light';saveState();render()">Claro</button>
+          <button class="btn btn-sm" onclick="state.prefs.fontSize=Math.max(14,state.prefs.fontSize-2);saveState();render()">A-</button>
+          <button class="btn btn-sm" onclick="state.prefs.fontSize=Math.min(26,state.prefs.fontSize+2);saveState();render()">A+</button>
+          <button class="btn btn-sm" onclick="state.prefs.font=state.prefs.font==='serif'?'sans':'serif';saveState();render()">${state.prefs.font==='serif'?'Sans':'Serif'}</button>
+        </div>
+      </div>
+
+      ${blocked ? `
+        <div class="warn-gate">
+          <h3>⚠️ Contenido clasificado ${esc(s.rating)}</h3>
+          <p style="color:var(--muted);margin:8px 0 14px">Advertencias: ${esc((s.warnings||[]).join(", ") || "Contenido maduro")}</p>
+          <button class="btn btn-primary" onclick="adultConfirmedId='${esc(s.id)}';render()">Continuar bajo mi responsabilidad</button>
+        </div>
+      ` : `
+        <h2 style="font-size:1.2rem;margin-top:8px">${esc(ch.title)}</h2>
+        ${ch.song ? `<div class="note-box">🎵 <strong>Banda sonora recomendada:</strong> ${esc(ch.song)}</div>` : ""}
+        ${ch.authorNote ? `<div class="note-box">✍️ <strong>Notas de autora:</strong> ${esc(ch.authorNote)}</div>` : ""}
+        <div class="chapter-body ${state.prefs.font==='sans'?'sans':''}">${esc(ch.body)}</div>
+        <div style="display:flex;justify-content:space-between;gap:10px;margin-top:18px;flex-wrap:wrap">
+          <button class="btn" ${chIdx===0?"disabled":""} onclick="activeChapterIdx=${chIdx-1};render()">← Capítulo anterior</button>
+          <button class="btn btn-primary" ${chIdx>=s.chapters.length-1?"disabled":""} onclick="activeChapterIdx=${chIdx+1};render()">Siguiente capítulo →</button>
+        </div>
+      `}
+
+      <div class="comments">
+        <h3 style="font-size:1rem">Comentarios de lectoras (${(s.comments||[]).length})</h3>
+        <form onsubmit="event.preventDefault();addComment('${esc(s.id)}',this)" style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <input class="input" style="flex:1;min-width:200px" name="text" placeholder="Dejá un comentario lindo para la autora..." required>
+          <button class="btn btn-primary" type="submit">Comentar</button>
+        </form>
+        ${(s.comments||[]).slice().reverse().map(c=>`
+          <div class="comment">
+            <strong>${esc(c.user)}</strong> <span style="color:var(--muted);font-size:.76rem">· ${esc(c.date)}</span>
+            <p style="margin-top:4px">${esc(c.text)}</p>
+          </div>
+        `).join("")}
+      </div>
+    </article>
+  `;
+}
+
+function addComment(storyId, form){
+  const txt = form.text.value.trim();
+  if(!txt) return;
+  const st = state.stories.find(x => x.id === storyId);
+  if(!st) return;
+  st.comments = st.comments || [];
+  st.comments.push({user:state.profile.handle || "@army",text:txt,date:new Date().toISOString().slice(0,10)});
+  saveState();
+  render();
+  toast("Comentario publicado 💜");
+}
+
+function renderEditor(){
+  const existing = editStoryId ? state.stories.find(x => x.id === editStoryId) : null;
+  const isAddingChapter = Boolean(existing);
+  const nextCapNum = existing ? existing.chapters.length + 1 : 1;
+
+  return `
+    <div style="margin-bottom:14px">
+      <button class="btn btn-sm" onclick="setView('archive')">← Cancelar y volver</button>
+    </div>
+    <section class="reader-box">
+      <h1 style="font-size:1.35rem;margin-bottom:4px">${isAddingChapter ? `Agregar capítulo a "${esc(existing.title)}"` : "Publicar nueva historia en Borahae Archive"}</h1>
+      <p style="color:var(--muted);font-size:.9rem;margin-bottom:16px">${isAddingChapter ? "Sumá un nuevo capítulo a esta saga o historia sin perder los anteriores." : "Completá los datos de tu fic, one-shot o Omegaverse y publicá al instante."}</p>
+      <form class="form-grid" onsubmit="event.preventDefault();saveStoryForm(this)">
+        ${!isAddingChapter ? `
+          <div class="form-2">
+            <div>
+              <label>Título de la historia</label>
+              <input class="input" name="title" required placeholder="Ej: Noches de Seúl">
             </div>
             <div>
-              <h2 id="prof-display-header" class="text-xl sm:text-2xl font-extrabold text-white">ARMY Writer</h2>
-              <p id="prof-handle-header" class="text-sm text-bora-400 font-semibold">@army_writer</p>
+              <label>Autor/a (@usuario)</label>
+              <input class="input" name="author" value="${esc(state.profile.handle)}" required>
             </div>
           </div>
-
-          <div class="flex flex-wrap gap-2 text-xs">
-            <span class="px-3 py-1.5 rounded-xl bg-bora-500/15 border border-bora-500/25 text-bora-200 font-semibold">
-              Bias: <strong id="prof-bias-badge">OT7</strong>
-            </span>
-            <span class="px-3 py-1.5 rounded-xl bg-purple-500/15 border border-purple-500/25 text-purple-200 font-semibold">
-              Ship fav: <strong id="prof-ship-badge">Yoonmin</strong>
-            </span>
+          <div class="form-2">
+            <div>
+              <label>Ship principal</label>
+              <select class="select" name="ship">${SHIPS.filter(x=>x!=="Todos").map(x=>`<option>${x}</option>`).join("")}</select>
+            </div>
+            <div>
+              <label>Categoría / Tropo</label>
+              <select class="select" name="category">${CATS.filter(x=>x!=="Todos").map(x=>`<option>${x}</option>`).join("")}</select>
+            </div>
+          </div>
+          <div class="form-2">
+            <div>
+              <label>Clasificación por edad</label>
+              <select class="select" name="rating">${RATINGS.map(x=>`<option>${x}</option>`).join("")}</select>
+            </div>
+            <div>
+              <label>Estado</label>
+              <select class="select" name="status"><option>En emisión</option><option>Completada</option></select>
+            </div>
+          </div>
+          <div>
+            <label>Advertencias (separadas por coma)</label>
+            <input class="input" name="warnings" placeholder="Ej: Final feliz, Nudos / Celo, Angst fuerte">
+          </div>
+          <div>
+            <label>Etiquetas / Tags (separadas por coma)</label>
+            <input class="input" name="tags" placeholder="Ej: Omegaverse, Slow burn, Invierno, Soulmates">
+          </div>
+          <div>
+            <label>Sinopsis</label>
+            <textarea class="textarea" name="synopsis" rows="3" required placeholder="Contá de qué trata la historia..."></textarea>
+          </div>
+        ` : ""}
+        <div class="form-2">
+          <div>
+            <label>Título del capítulo</label>
+            <input class="input" name="chTitle" value="Capítulo ${nextCapNum}" required>
+          </div>
+          <div>
+            <label>Banda sonora recomendada (opcional)</label>
+            <input class="input" name="song" placeholder="Ej: BTS — Spring Day">
           </div>
         </div>
+        <div>
+          <label>Notas de la autora (opcional)</label>
+          <textarea class="textarea" name="authorNote" rows="2" placeholder="Un mensajito para tus lectoras..."></textarea>
+        </div>
+        <div>
+          <label>Texto del capítulo</label>
+          <textarea class="textarea" name="body" rows="10" required placeholder="Escribí tu capítulo acá..."></textarea>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-primary" type="submit">${isAddingChapter ? "Publicar nuevo capítulo" : "Publicar historia"}</button>
+        </div>
+      </form>
+    </section>
+  `;
+}
 
-        <form onsubmit="saveUserProfile(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+function saveStoryForm(form){
+  const today = new Date().toISOString().slice(0,10);
+  if(editStoryId){
+    const st = state.stories.find(x => x.id === editStoryId);
+    if(!st) return;
+    st.chapters.push({
+      title:form.chTitle.value.trim(),
+      song:form.song.value.trim(),
+      authorNote:form.authorNote.value.trim(),
+      body:form.body.value
+    });
+    st.updated = today;
+    const newIdx = st.chapters.length - 1;
+    editStoryId = null;
+    saveState();
+    toast("¡Capítulo agregado! 💜");
+    openStory(st.id, newIdx);
+    return;
+  }
+
+  const id = "fic-" + Date.now();
+  const warnings = (form.warnings.value || "").split(",").map(s=>s.trim()).filter(Boolean);
+  const tags = (form.tags.value || "").split(",").map(s=>s.trim()).filter(Boolean);
+  const newStory = {
+    id,
+    title:form.title.value.trim(),
+    author:form.author.value.trim() || state.profile.handle,
+    ship:form.ship.value,
+    category:form.category.value,
+    rating:form.rating.value,
+    status:form.status.value,
+    warnings:warnings.length ? warnings : ["Sin advertencias"],
+    tags,
+    synopsis:form.synopsis.value.trim(),
+    updated:today,
+    likes:0,
+    chapters:[{
+      title:form.chTitle.value.trim(),
+      song:form.song.value.trim(),
+      authorNote:form.authorNote.value.trim(),
+      body:form.body.value
+    }],
+    comments:[]
+  };
+  state.stories.unshift(newStory);
+  saveState();
+  toast("¡Historia publicada en Borahae Archive! 💜");
+  openStory(id, 0);
+}
+
+function renderProfile(){
+  const myStories = state.stories.filter(s => s.author.toLowerCase() === (state.profile.handle||"").toLowerCase());
+  return `
+    <section class="reader-box" style="margin-bottom:18px">
+      <h1 style="font-size:1.35rem;margin-bottom:12px">Mi Perfil ARMY</h1>
+      <form class="form-grid" onsubmit="event.preventDefault();saveProfileForm(this)">
+        <div class="form-2">
           <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-purple-200/70 mb-1.5">Nombre visible</label>
-            <input type="text" id="prof-name" required class="w-full bg-plum-850 border border-bora-500/25 rounded-2xl px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-bora-500" />
+            <label>Tu @usuario o seudónimo</label>
+            <input class="input" name="handle" value="${esc(state.profile.handle)}" required>
           </div>
-
           <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-purple-200/70 mb-1.5">Usuario (@handle)</label>
-            <input type="text" id="prof-handle" required class="w-full bg-plum-850 border border-bora-500/25 rounded-2xl px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-bora-500" />
+            <label>Bias / Wreck</label>
+            <input class="input" name="bias" value="${esc(state.profile.bias)}">
           </div>
+        </div>
+        <div>
+          <label>Biografía corta</label>
+          <input class="input" name="bio" value="${esc(state.profile.bio)}">
+        </div>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--text)">
+          <input type="checkbox" name="allowAdult" ${state.prefs.allowAdult?"checked":""}>
+          Mostrar historias +16 / +18 sin pantalla de confirmación previa
+        </label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-primary" type="submit">Guardar perfil</button>
+          <button class="btn" type="button" onclick="exportJsonBackup()">💾 Respaldar todo (.json)</button>
+          <label class="btn" style="margin:0">📂 Restaurar .json <input type="file" accept=".json,application/json" style="display:none" onchange="importJsonBackup(this.files[0])"></label>
+        </div>
+      </form>
+    </section>
+    <h2 style="font-size:1.1rem;margin-bottom:12px">Mis historias publicadas (${myStories.length})</h2>
+    ${myStories.length ? `<div class="grid">${myStories.map(renderCard).join("")}</div>` : `<div class="empty">Todavía no publicaste historias con ${esc(state.profile.handle)}. Tocá "+ Publicar Fic" para empezar 💜</div>`}
+  `;
+}
 
-          <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-purple-200/70 mb-1.5">Tu Bias</label>
-            <select id="prof-bias" class="w-full bg-plum-850 border border-bora-500/25 rounded-2xl px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-bora-500">
-              <option value="OT7">OT7 (Los siete)</option>
-              <option value="Kim Namjoon (RM)">Kim Namjoon (RM)</option>
-              <option value="Kim Seokjin (Jin)">Kim Seokjin (Jin)</option>
-              <option value="Min Yoongi (Suga)">Min Yoongi (Suga)</option>
-              <option value="Jung Hoseok (J-Hope)">Jung Hoseok (J-Hope)</option>
-              <option value="Park Jimin (Jimin)">Park Jimin (Jimin)</option>
-              <option value="Kim Taehyung (V)">Kim Taehyung (V)</option>
-              <option value="Jeon Jungkook (JK)">Jeon Jungkook (JK)</option>
-            </select>
-          </div>
+function saveProfileForm(form){
+  state.profile.handle = form.handle.value.trim() || "@army_autora";
+  state.profile.bias = form.bias.value.trim() || "OT7";
+  state.profile.bio = form.bio.value.trim();
+  state.prefs.allowAdult = form.allowAdult.checked;
+  saveState();
+  render();
+  toast("Perfil actualizado 💜");
+}
 
-          <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-purple-200/70 mb-1.5">Ship Favorito</label>
-            <select id="prof-fav-ship" class="w-full bg-plum-850 border border-bora-500/25 rounded-2xl px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-bora-500">
-              <option value="Yoonmin">Yoonmin</option>
-              <option value="Taekook">Taekook</option>
-              <option value="Namjin">Namjin</option>
-              <option value="Sope">Sope</option>
-              <option value="Vmin">Vmin</option>
-              <option value="Jikook">Jikook</option>
-              <option value="OT7">OT7</option>
-              <option value="Reader / OC">Reader / OC</option>
-            </select>
-          </div>
+function render(){
+  document.getElementById("savedCount").textContent = state.saved.length;
+  const app = document.getElementById("app");
+  if(view === "reader") app.innerHTML = renderReader();
+  else if(view === "editor") app.innerHTML = renderEditor();
+  else if(view === "profile") app.innerHTML = renderProfile();
+  else if(view === "saved"){
+    const savedList = state.stories.filter(s => state.saved.includes(s.id));
+    app.innerHTML = renderArchive(savedList, "Mi biblioteca guardada");
+  }else{
+    app.innerHTML = renderArchive(getFilteredStories());
+  }
+}
 
-          <div class="sm:col-span-2">
-            <label class="block text-xs font-bold uppercase tracking-wider text-purple-200/70 mb-1.5">Biografía corta</label>
-            <textarea id="prof-bio" r
+applyPrefs();
+render();
+</script>
+</body>
+</html>
