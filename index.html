@@ -17,13 +17,17 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .wrap{max-width:1120px;margin:0 auto;padding:0 16px 48px}
 header{position:sticky;top:0;z-index:30;backdrop-filter:blur(12px);background:color-mix(in srgb,var(--bg) 86%,transparent);border-bottom:1px solid var(--border)}
 .nav{max-width:1120px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.read-progress-wrap{width:100%;height:4px;background:transparent;display:none}
+.read-progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .08s linear}
 .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.1rem;letter-spacing:.3px}
 .brand-badge{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:1rem}
 .nav-btns{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .btn{padding:8px 14px;border-radius:10px;font-size:.88rem;font-weight:600;background:var(--surface2);border:1px solid var(--border);transition:.15s}
 .btn:hover:not(:disabled){border-color:var(--accent2);transform:translateY(-1px)}
 .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none}
+.btn-danger{background:color-mix(in srgb,var(--danger) 18%,var(--surface2));color:var(--danger);border-color:color-mix(in srgb,var(--danger) 40%,transparent)}
 .btn-sm{padding:6px 10px;font-size:.8rem;border-radius:8px}
+.admin-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;font-size:.72rem;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
 .hero{margin:20px 0;padding:22px;border-radius:18px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 20%,var(--surface)),var(--surface));border:1px solid var(--border)}
 .hero h1{font-size:1.55rem;margin-bottom:6px}
 .hero p{color:var(--muted);font-size:.95rem;max-width:720px}
@@ -31,7 +35,7 @@ header{position:sticky;top:0;z-index:30;backdrop-filter:blur(12px);background:co
 .continue-meta{font-size:.82rem;color:var(--muted)}
 .continue-title{font-weight:700;font-size:1rem;margin-top:2px}
 .controls{display:grid;gap:12px;margin-bottom:18px}
-.search-row{display:flex;gap:10px;flex-wrap:wrap}
+.search-row{display:grid;grid-template-columns:1fr auto;gap:10px}
 .input,.select,.textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 13px;font-size:.92rem}
 .input:focus,.select:focus,.textarea:focus{outline:2px solid color-mix(in srgb,var(--accent2) 55%,transparent);border-color:var(--accent2)}
 .chips{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
@@ -61,10 +65,16 @@ header{position:sticky;top:0;z-index:30;backdrop-filter:blur(12px);background:co
 .form-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
 .editor-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--surface2);padding:10px 14px;border-radius:12px;font-size:.84rem;color:var(--muted)}
 .preview-box{margin-top:14px;padding:18px;border-radius:14px;background:var(--surface2);border:1px solid var(--border)}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0 18px}
+.stat-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px}
+.stat-num{font-size:1.35rem;font-weight:800;color:var(--accent2)}
+.stat-lbl{font-size:.78rem;color:var(--muted)}
+.rule-list{display:grid;gap:10px;margin-top:10px}
+.rule-item{background:var(--surface2);border-radius:12px;padding:12px 14px;font-size:.9rem}
 label{display:block;font-size:.84rem;font-weight:600;margin-bottom:4px;color:var(--muted)}
 .toast{position:fixed;bottom:18px;right:18px;z-index:60;background:var(--accent);color:#fff;padding:10px 16px;border-radius:12px;font-size:.88rem;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.35);display:none}
 .empty{text-align:center;padding:40px 16px;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:16px}
-@media(max-width:600px){.hero h1{font-size:1.3rem}.reader-box{padding:15px}}
+@media(max-width:600px){.hero h1{font-size:1.3rem}.reader-box{padding:15px}.search-row{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -77,15 +87,19 @@ label{display:block;font-size:.84rem;font-weight:600;margin-bottom:4px;color:var
     <div class="nav-btns">
       <button class="btn btn-sm" onclick="setView('archive')">Archivo</button>
       <button class="btn btn-sm" onclick="setView('saved')">Guardados (<span id="savedCount">0</span>)</button>
+      <button class="btn btn-sm" onclick="setView('rules')">Reglas</button>
       <button class="btn btn-sm" onclick="setView('profile')">Mi Perfil</button>
       <button class="btn btn-primary btn-sm" onclick="openEditor()">+ Publicar Fic</button>
     </div>
+  </div>
+  <div class="read-progress-wrap" id="readProgressWrap">
+    <div class="read-progress-bar" id="readProgressBar"></div>
   </div>
 </header>
 
 <main class="wrap" id="app"></main>
 <div class="toast" id="toast"></div>
-  <script>
+<script>
 const STORAGE_KEY = "borahae_archive_v1";
 const SHIPS = ["Todos","Yoonmin","Taekook","Namjin","Sope","Vmin","Jikook","OT7","Reader/OC"];
 const CATS = ["Todos","Omegaverse","One-Shot","AU","Angst","Fluff","Misterio"];
@@ -99,6 +113,7 @@ const DEFAULT_STORIES = [
     ship:"Yoonmin",
     category:"One-Shot",
     rating:"+13 Teen",
+    pinned:true,
     warnings:["Final feliz"],
     tags:["Fluff","Invierno","Café","Confesión"],
     synopsis:"Después de horas practicando una coreografía nueva, un corte de luz deja a Yoongi y Jimin atrapados en el estudio con un termo de té y palabras que venían guardando hace meses.",
@@ -124,6 +139,7 @@ const DEFAULT_STORIES = [
     ship:"Taekook",
     category:"Omegaverse",
     rating:"+18 Explícito",
+    pinned:false,
     warnings:["Angst fuerte","Nudos / Celo"],
     tags:["Omegaverse","Alma gemela","Reencuentro","Supresores"],
     synopsis:"En una Seúl dividida por los pactos entre clanes, un omega que oculta su aroma tras supresores vuelve a cruzarse con el alfa que juró protegerlo cinco inviernos atrás.",
@@ -155,6 +171,7 @@ const DEFAULT_STORIES = [
     ship:"Namjin",
     category:"AU",
     rating:"Todo público",
+    pinned:false,
     warnings:["Final feliz"],
     tags:["Radio","Slice of life","Madrugada","Slow burn"],
     synopsis:"Una radio independiente de madrugada conecta a un conductor nocturno con el panadero de la esquina que llama cada noche para pedir una canción distinta.",
@@ -174,7 +191,7 @@ const DEFAULT_STORIES = [
 ];
 
 const DEFAULT_STATE = {
-  profile:{handle:"@army_autora",bias:"OT7",bio:"Escribiendo one-shots, AUs y sagas Omegaverse con amor ARMY 💜"},
+  profile:{handle:"@borahae_admin",bias:"OT7",bio:"Administradora de Borahae Archive — cuidando el espacio y las historias 💜",isAdmin:true},
   prefs:{theme:"dark",font:"serif",fontSize:18,allowAdult:false},
   saved:[],
   lastRead:null,
@@ -202,6 +219,7 @@ let state = loadState();
 let view = "archive";
 let filterShip = "Todos";
 let filterCat = "Todos";
+let sortBy = "recent";
 let searchQuery = "";
 let activeStoryId = null;
 let activeChapterIdx = 0;
@@ -239,6 +257,41 @@ function countWords(text=""){
   if(!trimmed) return 0;
   return trimmed.split(/\s+/).length;
 }
+
+function copySongQuery(song){
+  if(!song) return;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(song).then(()=>toast("Canción copiada: " + song)).catch(()=>toast("Canción: " + song));
+  }else{
+    toast("Canción: " + song);
+  }
+}
+
+function updateReadProgress(){
+  const wrap = document.getElementById("readProgressWrap");
+  const bar = document.getElementById("readProgressBar");
+  if(!wrap || !bar) return;
+  if(view !== "reader"){
+    wrap.style.display = "none";
+    bar.style.width = "0%";
+    return;
+  }
+  wrap.style.display = "block";
+  const bodyEl = document.querySelector(".chapter-body");
+  if(!bodyEl){
+    bar.style.width = "0%";
+    return;
+  }
+  const rect = bodyEl.getBoundingClientRect();
+  const winH = window.innerHeight;
+  const total = rect.height - winH * 0.45;
+  const scrolled = (winH * 0.45) - rect.top;
+  const pct = total <= 0 ? (rect.top < winH ? 100 : 0) : Math.min(100, Math.max(0, (scrolled / total) * 100));
+  bar.style.width = pct.toFixed(1) + "%";
+}
+
+window.addEventListener("scroll", updateReadProgress, {passive:true});
+window.addEventListener("resize", updateReadProgress, {passive:true});
 
 function recordLastRead(storyId, chIdx){
   const st = state.stories.find(x => x.id === storyId);
@@ -307,6 +360,40 @@ function toggleLike(id){
   toast("¡Enviaste amor a esta historia! 💜");
 }
 
+function togglePinStory(id){
+  if(!state.profile.isAdmin) return;
+  const st = state.stories.find(s => s.id === id);
+  if(!st) return;
+  st.pinned = !st.pinned;
+  saveState();
+  render();
+  toast(st.pinned ? "Historia fijada por administración 📌" : "Historia desfijada");
+}
+
+function deleteStoryAdmin(id){
+  if(!state.profile.isAdmin) return;
+  state.stories = state.stories.filter(s => s.id !== id);
+  state.saved = state.saved.filter(x => x !== id);
+  if(state.lastRead && state.lastRead.storyId === id) state.lastRead = null;
+  if(activeStoryId === id){
+    activeStoryId = state.stories[0] ? state.stories[0].id : null;
+    view = "archive";
+  }
+  saveState();
+  render();
+  toast("Historia eliminada por administración");
+}
+
+function deleteCommentAdmin(storyId, commentIdx){
+  if(!state.profile.isAdmin) return;
+  const st = state.stories.find(s => s.id === storyId);
+  if(!st || !Array.isArray(st.comments)) return;
+  st.comments.splice(commentIdx, 1);
+  saveState();
+  render();
+  toast("Comentario eliminado por administración");
+}
+
 function downloadChapterTxt(story, chIdx){
   const ch = story.chapters[chIdx] || story.chapters[0];
   const content = `${story.title}\nAutor/a: ${story.author}\nShip: ${story.ship} | Categoría: ${story.category} | Clasificación: ${story.rating}\n${ch.title}\n${ch.song ? "Banda sonora: " + ch.song + "\n" : ""}${ch.authorNote ? "Notas: " + ch.authorNote + "\n" : ""}\n${ch.body}`;
@@ -355,15 +442,26 @@ function importJsonBackup(file){
   reader.readAsText(file);
 }
 
+function sortStories(list){
+  const copy = [...list];
+  return copy.sort((a,b) => {
+    if(Boolean(b.pinned) !== Boolean(a.pinned)) return b.pinned ? 1 : -1;
+    if(sortBy === "likes") return (b.likes||0) - (a.likes||0);
+    if(sortBy === "comments") return ((b.comments||[]).length) - ((a.comments||[]).length);
+    return String(b.updated||"").localeCompare(String(a.updated||""));
+  });
+}
+
 function getFilteredStories(){
   const q = searchQuery.trim().toLowerCase();
-  return state.stories.filter(s => {
+  const filtered = state.stories.filter(s => {
     const matchShip = filterShip === "Todos" || s.ship === filterShip;
     const matchCat = filterCat === "Todos" || s.category === filterCat;
     const hay = `${s.title} ${s.author} ${s.ship} ${s.category} ${s.synopsis} ${(s.tags||[]).join(" ")} ${(s.warnings||[]).join(" ")}`.toLowerCase();
     const matchQ = !q || hay.includes(q);
     return matchShip && matchCat && matchQ;
   });
+  return sortStories(filtered);
 }
 
 function renderContinueBox(){
@@ -390,7 +488,7 @@ function renderCard(s){
     <article class="card">
       <div>
         <div class="meta-top">
-          <span>${esc(s.ship)} · ${esc(s.category)} · ${s.chapters.length} cap.</span>
+          <span>${s.pinned ? "📌 Fijada · " : ""}${esc(s.ship)} · ${esc(s.category)} · ${s.chapters.length} cap.</span>
           <span class="rating ${isAdult?"adult":""}">${esc(s.rating)}</span>
         </div>
         <h3 class="title"><a href="#${esc(s.id)}" onclick="event.preventDefault();openStory('${esc(s.id)}')">${esc(s.title)}</a></h3>
@@ -403,7 +501,8 @@ function renderCard(s){
       </div>
       <div class="card-foot">
         <span>💜 ${s.likes||0} · 💬 ${(s.comments||[]).length}</span>
-        <div style="display:flex;gap:6px">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          ${state.profile.isAdmin ? `<button class="btn btn-sm" onclick="togglePinStory('${esc(s.id)}')">${s.pinned?"Desfijar":"Fijar"}</button>` : ""}
           <button class="btn btn-sm" onclick="toggleSaved('${esc(s.id)}')">${isSaved?"Guardado":"Guardar"}</button>
           <button class="btn btn-primary btn-sm" onclick="openStory('${esc(s.id)}')">Leer</button>
         </div>
@@ -424,6 +523,11 @@ function renderArchive(list, titleText="Historias destacadas de ARMY"){
     <section class="controls">
       <div class="search-row">
         <input class="input" type="search" placeholder="Buscar por título, autora, tag, advertencia o trama..." value="${esc(searchQuery)}" oninput="searchQuery=this.value;render()">
+        <select class="select" style="width:auto;min-width:190px" aria-label="Ordenar historias" onchange="sortBy=this.value;render()">
+          <option value="recent" ${sortBy==="recent"?"selected":""}>Ordenar: Más recientes</option>
+          <option value="likes" ${sortBy==="likes"?"selected":""}>Ordenar: Más gustadas 💜</option>
+          <option value="comments" ${sortBy==="comments"?"selected":""}>Ordenar: Más comentadas 💬</option>
+        </select>
       </div>
       <div class="chips"><span style="font-size:.78rem;color:var(--muted)">Ships:</span>${shipChips}</div>
       <div class="chips"><span style="font-size:.78rem;color:var(--muted)">Género:</span>${catChips}</div>
@@ -432,7 +536,33 @@ function renderArchive(list, titleText="Historias destacadas de ARMY"){
     ${list.length ? `<div class="grid">${list.map(renderCard).join("")}</div>` : `<div class="empty">No encontramos historias con ese filtro. Probá limpiar la búsqueda o publicar la tuya 💜</div>`}
   `;
 }
-          function renderReader(){
+
+function renderRules(){
+  return `
+    <div style="margin-bottom:14px">
+      <button class="btn btn-sm" onclick="setView('archive')">← Volver al archivo</button>
+    </div>
+    <section class="reader-box">
+      <h1 style="font-size:1.45rem;margin-bottom:6px">📜 Reglas y Advertencias de Borahae Archive</h1>
+      <p style="color:var(--muted);font-size:.92rem;margin-bottom:18px">Cuidamos este espacio para que leer y publicar sea seguro, respetuoso y disfrutable para toda ARMY.</p>
+
+      <h2 style="font-size:1.1rem;margin-top:12px">1. Convivencia y normas del archivo</h2>
+      <div class="rule-list">
+        <div class="rule-item"><strong>Respeto mutuo y cero ship wars:</strong> Cada ship, AU y dinámica tiene su lugar. No se permiten burlas, comparaciones tóxicas ni ataques entre lectoras o autoras.</div>
+        <div class="rule-item"><strong>Crédito a la autoría:</strong> Publicá solo historias propias o con permiso explícito. Respetá las notas, etiquetas y límites de cada autora.</div>
+        <div class="rule-item"><strong>Comentarios constructivos:</strong> Celebrá lo que te gustó o dejá teorías con cariño; no se tolera el spam ni los comentarios agresivos.</div>
+      </div>
+
+      <h2 style="font-size:1.1rem;margin-top:20px">2. Clasificaciones por edad y advertencias</h2>
+      <div class="rule-list">
+        <div class="rule-item"><strong>Todo público / +13 Teen:</strong> Historias aptas para todo público o con conflictos adolescentes/emocionales suaves sin contenido explícito.</div>
+        <div class="rule-item"><strong>+16 / +18 Explícito:</strong> Historias con romance intenso, dinámica Omegaverse adulta, lenguaje fuerte o escenas explícitas. Activan pantalla de advertencia previa.</div>
+        <div class="rule-item"><strong>Etiquetá siempre los temas sensibles:</strong> Si tu capítulo incluye <em>Angst fuerte</em>, <em>Nudos / Celo</em>, <em>Violencia / Sangre</em>, <em>Muerte de personaje</em> o <em>Lenguaje adulto</em>, cargalo en advertencias para que cada lectora decida con libertad.</div>
+      </div>
+    </section>
+  `;
+}
+  function renderReader(){
   const s = state.stories.find(x => x.id === activeStoryId) || state.stories[0];
   if(!s) return renderArchive(getFilteredStories());
   const chIdx = Math.min(Math.max(0, activeChapterIdx), s.chapters.length - 1);
@@ -441,6 +571,7 @@ function renderArchive(list, titleText="Historias destacadas de ARMY"){
   const isAdult = s.rating.startsWith("+16") || s.rating.startsWith("+18");
   const blocked = isAdult && !state.prefs.allowAdult && adultConfirmedId !== s.id;
   const isSaved = state.saved.includes(s.id);
+  const ytUrl = ch && ch.song ? `https://www.youtube.com/results?search_query=${encodeURIComponent(ch.song)}` : "";
 
   return `
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
@@ -449,10 +580,14 @@ function renderArchive(list, titleText="Historias destacadas de ARMY"){
       <button class="btn btn-sm" onclick="toggleSaved('${esc(s.id)}')">${isSaved?"🔖 Guardada":"🔖 Guardar"}</button>
       <button class="btn btn-sm" onclick="toggleLike('${esc(s.id)}')">💜 Dar amor (${s.likes||0})</button>
       <button class="btn btn-sm" onclick="downloadChapterTxt(state.stories.find(x=>x.id==='${esc(s.id)}'), ${chIdx})">⬇️ Descargar .txt</button>
+      ${state.profile.isAdmin ? `
+        <button class="btn btn-sm" onclick="togglePinStory('${esc(s.id)}')">${s.pinned?"📌 Desfijar":"📌 Fijar"}</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteStoryAdmin('${esc(s.id)}')">🗑️ Borrar fic</button>
+      ` : ""}
     </div>
     <article class="reader-box">
       <div class="meta-top">
-        <span>${esc(s.ship)} · ${esc(s.category)} · ${esc(s.status)}</span>
+        <span>${s.pinned ? "📌 Fijada · " : ""}${esc(s.ship)} · ${esc(s.category)} · ${esc(s.status)}</span>
         <span class="rating ${isAdult?"adult":""}">${esc(s.rating)}</span>
       </div>
       <h1 style="font-size:1.5rem;margin-top:6px">${esc(s.title)}</h1>
@@ -489,7 +624,15 @@ function renderArchive(list, titleText="Historias destacadas de ARMY"){
         </div>
       ` : `
         <h2 style="font-size:1.2rem;margin-top:8px">${esc(ch.title)}</h2>
-        ${ch.song ? `<div class="note-box">🎵 <strong>Banda sonora recomendada:</strong> ${esc(ch.song)}</div>` : ""}
+        ${ch.song ? `
+          <div class="note-box" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+            <div>🎵 <strong>Banda sonora de la escena:</strong> ${esc(ch.song)}</div>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-sm" type="button" onclick="copySongQuery('${esc(ch.song)}')">Copiar tema</button>
+              <a class="btn btn-sm" href="${ytUrl}" target="_blank" rel="noopener noreferrer">Buscar en YouTube ↗</a>
+            </div>
+          </div>
+        ` : ""}
         ${ch.authorNote ? `<div class="note-box">✍️ <strong>Notas de autora:</strong> ${esc(ch.authorNote)}</div>` : ""}
         <div class="chapter-body ${state.prefs.font==='sans'?'sans':''}">${esc(ch.body)}</div>
         <div style="display:flex;justify-content:space-between;gap:10px;margin-top:18px;flex-wrap:wrap">
@@ -504,12 +647,18 @@ function renderArchive(list, titleText="Historias destacadas de ARMY"){
           <input class="input" style="flex:1;min-width:200px" name="text" placeholder="Dejá un comentario lindo para la autora..." required>
           <button class="btn btn-primary" type="submit">Comentar</button>
         </form>
-        ${(s.comments||[]).slice().reverse().map(c=>`
-          <div class="comment">
-            <strong>${esc(c.user)}</strong> <span style="color:var(--muted);font-size:.76rem">· ${esc(c.date)}</span>
-            <p style="margin-top:4px">${esc(c.text)}</p>
-          </div>
-        `).join("")}
+        ${(s.comments||[]).slice().reverse().map((c, revIdx)=>{
+          const realIdx = (s.comments||[]).length - 1 - revIdx;
+          return `
+            <div class="comment">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+                <div><strong>${esc(c.user)}</strong> <span style="color:var(--muted);font-size:.76rem">· ${esc(c.date)}</span></div>
+                ${state.profile.isAdmin ? `<button class="btn btn-danger btn-sm" onclick="deleteCommentAdmin('${esc(s.id)}',${realIdx})">Borrar</button>` : ""}
+              </div>
+              <p style="margin-top:4px">${esc(c.text)}</p>
+            </div>
+          `;
+        }).join("")}
       </div>
     </article>
   `;
@@ -521,7 +670,8 @@ function addComment(storyId, form){
   const st = state.stories.find(x => x.id === storyId);
   if(!st) return;
   st.comments = st.comments || [];
-  st.comments.push({user:state.profile.handle || "@army",text:txt,date:new Date().toISOString().slice(0,10)});
+  const badge = state.profile.isAdmin ? " (Admin 💜)" : "";
+  st.comments.push({user:(state.profile.handle || "@army") + badge,text:txt,date:new Date().toISOString().slice(0,10)});
   saveState();
   render();
   toast("Comentario publicado 💜");
@@ -541,9 +691,8 @@ function toggleEditorPreview(){
   renderChapterPreviewBox();
   const btn = document.getElementById("togglePreviewBtn");
   if(btn) btn.textContent = showPreview ? "Ocultar vista previa" : "👁️ Vista previa";
-}
-
-function renderChapterPreviewBox(){
+    }
+  function renderChapterPreviewBox(){
   const box = document.getElementById("editorPreviewBox");
   const form = document.getElementById("storyEditorForm");
   if(!box || !form) return;
@@ -565,7 +714,7 @@ function renderChapterPreviewBox(){
       <span style="font-size:.78rem;color:var(--muted)">${words} ${words === 1 ? "palabra" : "palabras"}</span>
     </div>
     <h3 style="font-size:1.15rem;margin-bottom:8px">${esc(chTitle)}</h3>
-    ${song ? `<div class="note-box" style="background:var(--surface)">🎵 <strong>Banda sonora recomendada:</strong> ${esc(song)}</div>` : ""}
+    ${song ? `<div class="note-box" style="background:var(--surface)">🎵 <strong>Banda sonora de la escena:</strong> ${esc(song)}</div>` : ""}
     ${authorNote ? `<div class="note-box" style="background:var(--surface)">✍️ <strong>Notas de autora:</strong> ${esc(authorNote)}</div>` : ""}
     <div class="chapter-body ${state.prefs.font==='sans'?'sans':''}" style="margin:12px 0 0">${esc(body || "Todavía no escribiste el cuerpo del capítulo.")}</div>
   `;
@@ -634,8 +783,8 @@ function renderEditor(){
             <input class="input" name="chTitle" value="Capítulo ${nextCapNum}" required oninput="if(showPreview)renderChapterPreviewBox()">
           </div>
           <div>
-            <label>Banda sonora recomendada (opcional)</label>
-            <input class="input" name="song" placeholder="Ej: BTS — Spring Day" oninput="if(showPreview)renderChapterPreviewBox()">
+            <label>Canción y cantante / artista (cualquier tema libre)</label>
+            <input class="input" name="song" placeholder="Ej: Artista — Nombre de la canción" oninput="if(showPreview)renderChapterPreviewBox()">
           </div>
         </div>
         <div>
@@ -690,6 +839,7 @@ function saveStoryForm(form){
     ship:form.ship.value,
     category:form.category.value,
     rating:form.rating.value,
+    pinned:false,
     status:form.status.value,
     warnings:warnings.length ? warnings : ["Sin advertencias"],
     tags,
@@ -713,9 +863,15 @@ function saveStoryForm(form){
 
 function renderProfile(){
   const myStories = state.stories.filter(s => s.author.toLowerCase() === (state.profile.handle||"").toLowerCase());
+  const totalChapters = state.stories.reduce((acc, s) => acc + (s.chapters ? s.chapters.length : 0), 0);
+  const totalComments = state.stories.reduce((acc, s) => acc + (s.comments ? s.comments.length : 0), 0);
+
   return `
     <section class="reader-box" style="margin-bottom:18px">
-      <h1 style="font-size:1.35rem;margin-bottom:12px">Mi Perfil ARMY</h1>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+        <h1 style="font-size:1.35rem">Mi Perfil ARMY</h1>
+        ${state.profile.isAdmin ? `<span class="admin-pill">🛡️ Administradora</span>` : ""}
+      </div>
       <form class="form-grid" onsubmit="event.preventDefault();saveProfileForm(this)">
         <div class="form-2">
           <div>
@@ -732,6 +888,10 @@ function renderProfile(){
           <input class="input" name="bio" value="${esc(state.profile.bio)}">
         </div>
         <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--text)">
+          <input type="checkbox" name="isAdmin" ${state.profile.isAdmin?"checked":""}>
+          Activar modo Administradora (fijar historias, moderar comentarios y ver resumen)
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--text)">
           <input type="checkbox" name="allowAdult" ${state.prefs.allowAdult?"checked":""}>
           Mostrar historias +16 / +18 sin pantalla de confirmación previa
         </label>
@@ -741,6 +901,17 @@ function renderProfile(){
           <label class="btn" style="margin:0">📂 Restaurar .json <input type="file" accept=".json,application/json" style="display:none" onchange="importJsonBackup(this.files[0])"></label>
         </div>
       </form>
+
+      ${state.profile.isAdmin ? `
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+          <h2 style="font-size:1.05rem">Panel de Administradora — Resumen del archivo</h2>
+          <div class="stats-grid">
+            <div class="stat-card"><div class="stat-num">${state.stories.length}</div><div class="stat-lbl">Historias totales</div></div>
+            <div class="stat-card"><div class="stat-num">${totalChapters}</div><div class="stat-lbl">Capítulos publicados</div></div>
+            <div class="stat-card"><div class="stat-num">${totalComments}</div><div class="stat-lbl">Comentarios</div></div>
+          </div>
+        </div>
+      ` : ""}
     </section>
     <h2 style="font-size:1.1rem;margin-bottom:12px">Mis historias publicadas (${myStories.length})</h2>
     ${myStories.length ? `<div class="grid">${myStories.map(renderCard).join("")}</div>` : `<div class="empty">Todavía no publicaste historias con ${esc(state.profile.handle)}. Tocá "+ Publicar Fic" para empezar 💜</div>`}
@@ -751,6 +922,7 @@ function saveProfileForm(form){
   state.profile.handle = form.handle.value.trim() || "@army_autora";
   state.profile.bias = form.bias.value.trim() || "OT7";
   state.profile.bio = form.bio.value.trim();
+  state.profile.isAdmin = Boolean(form.isAdmin && form.isAdmin.checked);
   state.prefs.allowAdult = form.allowAdult.checked;
   saveState();
   render();
@@ -763,12 +935,14 @@ function render(){
   if(view === "reader") app.innerHTML = renderReader();
   else if(view === "editor") app.innerHTML = renderEditor();
   else if(view === "profile") app.innerHTML = renderProfile();
+  else if(view === "rules") app.innerHTML = renderRules();
   else if(view === "saved"){
-    const savedList = state.stories.filter(s => state.saved.includes(s.id));
+    const savedList = sortStories(state.stories.filter(s => state.saved.includes(s.id)));
     app.innerHTML = renderArchive(savedList, "Mi biblioteca guardada");
   }else{
     app.innerHTML = renderArchive(getFilteredStories());
   }
+  updateReadProgress();
 }
 
 applyPrefs();
@@ -776,4 +950,3 @@ render();
 </script>
 </body>
 </html>
-
