@@ -13,6 +13,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-ui);line-heig
 a{color:var(--accent2);text-decoration:none}
 button,input,select,textarea{font-family:inherit;color:inherit}
 button{cursor:pointer;border:none;background:none}
+button:disabled{opacity:.45;cursor:not-allowed}
 .wrap{max-width:1120px;margin:0 auto;padding:0 16px 48px}
 header{position:sticky;top:0;z-index:30;backdrop-filter:blur(12px);background:color-mix(in srgb,var(--bg) 86%,transparent);border-bottom:1px solid var(--border)}
 .nav{max-width:1120px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
@@ -20,12 +21,15 @@ header{position:sticky;top:0;z-index:30;backdrop-filter:blur(12px);background:co
 .brand-badge{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:1rem}
 .nav-btns{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .btn{padding:8px 14px;border-radius:10px;font-size:.88rem;font-weight:600;background:var(--surface2);border:1px solid var(--border);transition:.15s}
-.btn:hover{border-color:var(--accent2);transform:translateY(-1px)}
+.btn:hover:not(:disabled){border-color:var(--accent2);transform:translateY(-1px)}
 .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none}
 .btn-sm{padding:6px 10px;font-size:.8rem;border-radius:8px}
 .hero{margin:20px 0;padding:22px;border-radius:18px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 20%,var(--surface)),var(--surface));border:1px solid var(--border)}
 .hero h1{font-size:1.55rem;margin-bottom:6px}
 .hero p{color:var(--muted);font-size:.95rem;max-width:720px}
+.continue-bar{margin-bottom:18px;padding:14px 18px;border-radius:16px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.continue-meta{font-size:.82rem;color:var(--muted)}
+.continue-title{font-weight:700;font-size:1rem;margin-top:2px}
 .controls{display:grid;gap:12px;margin-bottom:18px}
 .search-row{display:flex;gap:10px;flex-wrap:wrap}
 .input,.select,.textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 13px;font-size:.92rem}
@@ -55,6 +59,8 @@ header{position:sticky;top:0;z-index:30;backdrop-filter:blur(12px);background:co
 .comment{padding:10px 12px;border-radius:10px;background:var(--surface2);margin-top:8px;font-size:.88rem}
 .form-grid{display:grid;gap:12px;max-width:740px}
 .form-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.editor-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--surface2);padding:10px 14px;border-radius:12px;font-size:.84rem;color:var(--muted)}
+.preview-box{margin-top:14px;padding:18px;border-radius:14px;background:var(--surface2);border:1px solid var(--border)}
 label{display:block;font-size:.84rem;font-weight:600;margin-bottom:4px;color:var(--muted)}
 .toast{position:fixed;bottom:18px;right:18px;z-index:60;background:var(--accent);color:#fff;padding:10px 16px;border-radius:12px;font-size:.88rem;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.35);display:none}
 .empty{text-align:center;padding:40px 16px;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:16px}
@@ -79,6 +85,7 @@ label{display:block;font-size:.84rem;font-weight:600;margin-bottom:4px;color:var
 
 <main class="wrap" id="app"></main>
 <div class="toast" id="toast"></div>
+
 <script>
 const STORAGE_KEY = "borahae_archive_v1";
 const SHIPS = ["Todos","Yoonmin","Taekook","Namjin","Sope","Vmin","Jikook","OT7","Reader/OC"];
@@ -171,6 +178,7 @@ const DEFAULT_STATE = {
   profile:{handle:"@army_autora",bias:"OT7",bio:"Escribiendo one-shots, AUs y sagas Omegaverse con amor ARMY 💜"},
   prefs:{theme:"dark",font:"serif",fontSize:18,allowAdult:false},
   saved:[],
+  lastRead:null,
   stories:DEFAULT_STORIES
 };
 
@@ -183,6 +191,7 @@ function loadState(){
       profile:{...DEFAULT_STATE.profile,...(parsed.profile||{})},
       prefs:{...DEFAULT_STATE.prefs,...(parsed.prefs||{})},
       saved:Array.isArray(parsed.saved)?parsed.saved:[],
+      lastRead:parsed.lastRead && typeof parsed.lastRead === "object" ? parsed.lastRead : null,
       stories:Array.isArray(parsed.stories)&&parsed.stories.length?parsed.stories:structuredClone(DEFAULT_STATE.stories)
     };
   }catch(e){
@@ -199,6 +208,7 @@ let activeStoryId = null;
 let activeChapterIdx = 0;
 let adultConfirmedId = null;
 let editStoryId = null;
+let showPreview = false;
 
 function saveState(){
   localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
@@ -225,8 +235,23 @@ function esc(str=""){
   return String(str).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 }
 
+function countWords(text=""){
+  const trimmed = String(text).trim();
+  if(!trimmed) return 0;
+  return trimmed.split(/\s+/).length;
+}
+
+function recordLastRead(storyId, chIdx){
+  const st = state.stories.find(x => x.id === storyId);
+  if(!st) return;
+  const safeIdx = Math.min(Math.max(0, chIdx), st.chapters.length - 1);
+  state.lastRead = {storyId:st.id, chapterIdx:safeIdx, updated:new Date().toISOString().slice(0,10)};
+  saveState();
+}
+
 function setView(nextView){
   view = nextView;
+  showPreview = false;
   render();
   window.scrollTo({top:0,behavior:"smooth"});
 }
@@ -235,13 +260,29 @@ function openStory(id, chIdx=0){
   activeStoryId = id;
   activeChapterIdx = chIdx;
   view = "reader";
+  showPreview = false;
+  recordLastRead(id, chIdx);
   render();
   window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function continueReading(){
+  if(!state.lastRead) return;
+  const st = state.stories.find(x => x.id === state.lastRead.storyId);
+  if(!st){
+    state.lastRead = null;
+    saveState();
+    render();
+    return;
+  }
+  const safeIdx = Math.min(Math.max(0, state.lastRead.chapterIdx || 0), st.chapters.length - 1);
+  openStory(st.id, safeIdx);
 }
 
 function openEditor(storyId=null){
   editStoryId = storyId;
   view = "editor";
+  showPreview = false;
   render();
   window.scrollTo({top:0,behavior:"smooth"});
 }
@@ -302,6 +343,7 @@ function importJsonBackup(file){
         profile:{...DEFAULT_STATE.profile,...(data.profile||{})},
         prefs:{...DEFAULT_STATE.prefs,...(data.prefs||{})},
         saved:Array.isArray(data.saved)?data.saved:[],
+        lastRead:data.lastRead && typeof data.lastRead === "object" ? data.lastRead : null,
         stories:data.stories
       };
       saveState();
@@ -325,6 +367,23 @@ function getFilteredStories(){
   });
 }
 
+function renderContinueBox(){
+  if(!state.lastRead) return "";
+  const st = state.stories.find(x => x.id === state.lastRead.storyId);
+  if(!st) return "";
+  const chIdx = Math.min(Math.max(0, state.lastRead.chapterIdx || 0), st.chapters.length - 1);
+  const ch = st.chapters[chIdx];
+  return `
+    <section class="continue-bar">
+      <div>
+        <div class="continue-meta">📖 Continuar donde quedaste · ${esc(st.ship)} · ${esc(st.category)}</div>
+        <div class="continue-title">${esc(st.title)} <span style="font-weight:400;color:var(--muted);font-size:.88rem">— ${esc(ch ? ch.title : "Capítulo "+(chIdx+1))}</span></div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="continueReading()">Seguir leyendo →</button>
+    </section>
+  `;
+}
+
 function renderCard(s){
   const isAdult = s.rating.startsWith("+16") || s.rating.startsWith("+18");
   const isSaved = state.saved.includes(s.id);
@@ -346,37 +405,12 @@ function renderCard(s){
       <div class="card-foot">
         <span>💜 ${s.likes||0} · 💬 ${(s.comments||[]).length}</span>
         <div style="display:flex;gap:6px">
-          <button class="btn btn-sm" onclick="toggleSaved('${esc(s.id)}')">${isSaved?"Guardado":"Guardar"}</button>
-          <button class="btn btn-primary btn-sm" onclick="openStory('${esc(s.id)}')">Leer</button>
-        </div>
-      </div>
-    </article>
-  `;
-}
-
-function renderArchive(list, titleText="Historias destacadas de ARMY"){
-  const shipChips = SHIPS.map(sh => `<button class="chip ${filterShip===sh?"active":""}" onclick="filterShip='${sh}';render()">${sh}</button>`).join("");
-  const catChips = CATS.map(ct => `<button class="chip ${filterCat===ct?"active":""}" onclick="filterCat='${ct}';render()">${ct}</button>`).join("");
-  return `
-    <section class="hero">
-      <h1>💜 Borahae Archive</h1>
-      <p>Tu archivo de fanfics, one-shots, AUs y sagas Omegaverse de BTS. Leé con comodidad en modo nocturno o crema, filtrá por ship y categoría, y guardá tus historias favoritas.</p>
-    </section>
-    <section class="controls">
-      <div class="search-row">
-        <input class="input" type="search" placeholder="Buscar por título, autora, tag, advertencia o trama..." value="${esc(searchQuery)}" oninput="searchQuery=this.value;render()">
-      </div>
-      <div class="chips"><span style="font-size:.78rem;color:var(--muted)">Ships:</span>${shipChips}</div>
-      <div class="chips"><span style="font-size:.78rem;color:var(--muted)">Género:</span>${catChips}</div>
-    </section>
-    <h2 style="font-size:1.1rem;margin-bottom:12px">${esc(titleText)} (${list.length})</h2>
-    ${list.length ? `<div class="grid">${list.map(renderCard).join("")}</div>` : `<div class="empty">No encontramos historias con ese filtro. Probá limpiar la búsqueda o publicar la tuya 💜</div>`}
-  `;
-}
-  function renderReader(){
+          <button class="btn btn-sm" onclick="toggleSaved('${esc(s.id)}')">${isSaved?"Guardado":"Guardar"
+function renderReader(){
   const s = state.stories.find(x => x.id === activeStoryId) || state.stories[0];
   if(!s) return renderArchive(getFilteredStories());
   const chIdx = Math.min(Math.max(0, activeChapterIdx), s.chapters.length - 1);
+  recordLastRead(s.id, chIdx);
   const ch = s.chapters[chIdx];
   const isAdult = s.rating.startsWith("+16") || s.rating.startsWith("+18");
   const blocked = isAdult && !state.prefs.allowAdult && adultConfirmedId !== s.id;
@@ -405,11 +439,11 @@ function renderArchive(list, titleText="Historias destacadas de ARMY"){
 
       <div class="reader-toolbar">
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-          <select class="select" style="width:auto;padding:6px 10px" onchange="activeChapterIdx=Number(this.value);render()">
+          <select class="select" style="width:auto;padding:6px 10px" onchange="activeChapterIdx=Number(this.value);recordLastRead('${esc(s.id)}',activeChapterIdx);render()">
             ${s.chapters.map((c,i)=>`<option value="${i}" ${i===chIdx?"selected":""}>${esc(c.title || "Capítulo "+(i+1))}</option>`).join("")}
           </select>
-          <button class="btn btn-sm" ${chIdx===0?"disabled":""} onclick="activeChapterIdx=${chIdx-1};render()">← Anterior</button>
-          <button class="btn btn-sm" ${chIdx>=s.chapters.length-1?"disabled":""} onclick="activeChapterIdx=${chIdx+1};render()">Siguiente →</button>
+          <button class="btn btn-sm" ${chIdx===0?"disabled":""} onclick="activeChapterIdx=${chIdx-1};recordLastRead('${esc(s.id)}',activeChapterIdx);render()">← Anterior</button>
+          <button class="btn btn-sm" ${chIdx>=s.chapters.length-1?"disabled":""} onclick="activeChapterIdx=${chIdx+1};recordLastRead('${esc(s.id)}',activeChapterIdx);render()">Siguiente →</button>
         </div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
           <button class="btn btn-sm" onclick="state.prefs.theme='dark';saveState();render()">Noche</button>
@@ -433,8 +467,8 @@ function renderArchive(list, titleText="Historias destacadas de ARMY"){
         ${ch.authorNote ? `<div class="note-box">✍️ <strong>Notas de autora:</strong> ${esc(ch.authorNote)}</div>` : ""}
         <div class="chapter-body ${state.prefs.font==='sans'?'sans':''}">${esc(ch.body)}</div>
         <div style="display:flex;justify-content:space-between;gap:10px;margin-top:18px;flex-wrap:wrap">
-          <button class="btn" ${chIdx===0?"disabled":""} onclick="activeChapterIdx=${chIdx-1};render()">← Capítulo anterior</button>
-          <button class="btn btn-primary" ${chIdx>=s.chapters.length-1?"disabled":""} onclick="activeChapterIdx=${chIdx+1};render()">Siguiente capítulo →</button>
+          <button class="btn" ${chIdx===0?"disabled":""} onclick="activeChapterIdx=${chIdx-1};recordLastRead('${esc(s.id)}',activeChapterIdx);render()">← Capítulo anterior</button>
+          <button class="btn btn-primary" ${chIdx>=s.chapters.length-1?"disabled":""} onclick="activeChapterIdx=${chIdx+1};recordLastRead('${esc(s.id)}',activeChapterIdx);render()">Siguiente capítulo →</button>
         </div>
       `}
 
@@ -467,6 +501,50 @@ function addComment(storyId, form){
   toast("Comentario publicado 💜");
 }
 
+function updateWordCounter(){
+  const bodyEl = document.getElementById("chapterBodyInput");
+  const countEl = document.getElementById("wordCountLabel");
+  if(!bodyEl || !countEl) return;
+  const words = countWords(bodyEl.value);
+  countEl.textContent = `${words} ${words === 1 ? "palabra" : "palabras"}`;
+  if(showPreview) renderChapterPreviewBox();
+}
+
+function toggleEditorPreview(){
+  showPreview = !showPreview;
+  renderChapterPreviewBox();
+  const btn = document.getElementById("togglePreviewBtn");
+  if(btn) btn.textContent = showPreview ? "Ocultar vista previa" : "👁️ Vista previa";
+}
+
+function renderChapterPreviewBox(){
+  const box = document.getElementById("editorPreviewBox");
+  const form = document.getElementById("storyEditorForm");
+  if(!box || !form) return;
+  if(!showPreview){
+    box.style.display = "none";
+    box.innerHTML = "";
+    return;
+  }
+  const chTitle = (form.chTitle?.value || "").trim() || "Capítulo sin título";
+  const song = (form.song?.value || "").trim();
+  const authorNote = (form.authorNote?.value || "").trim();
+  const body = form.body?.value || "";
+  const words = countWords(body);
+
+  box.style.display = "block";
+  box.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+      <span style="font-size:.78rem;font-weight:700;color:var(--accent2)">VISTA PREVIA DEL CAPÍTULO</span>
+      <span style="font-size:.78rem;color:var(--muted)">${words} ${words === 1 ? "palabra" : "palabras"}</span>
+    </div>
+    <h3 style="font-size:1.15rem;margin-bottom:8px">${esc(chTitle)}</h3>
+    ${song ? `<div class="note-box" style="background:var(--surface)">🎵 <strong>Banda sonora recomendada:</strong> ${esc(song)}</div>` : ""}
+    ${authorNote ? `<div class="note-box" style="background:var(--surface)">✍️ <strong>Notas de autora:</strong> ${esc(authorNote)}</div>` : ""}
+    <div class="chapter-body ${state.prefs.font==='sans'?'sans':''}" style="margin:12px 0 0">${esc(body || "Todavía no escribiste el cuerpo del capítulo.")}</div>
+  `;
+}
+
 function renderEditor(){
   const existing = editStoryId ? state.stories.find(x => x.id === editStoryId) : null;
   const isAddingChapter = Boolean(existing);
@@ -479,7 +557,7 @@ function renderEditor(){
     <section class="reader-box">
       <h1 style="font-size:1.35rem;margin-bottom:4px">${isAddingChapter ? `Agregar capítulo a "${esc(existing.title)}"` : "Publicar nueva historia en Borahae Archive"}</h1>
       <p style="color:var(--muted);font-size:.9rem;margin-bottom:16px">${isAddingChapter ? "Sumá un nuevo capítulo a esta saga o historia sin perder los anteriores." : "Completá los datos de tu fic, one-shot o Omegaverse y publicá al instante."}</p>
-      <form class="form-grid" onsubmit="event.preventDefault();saveStoryForm(this)">
+      <form id="storyEditorForm" class="form-grid" onsubmit="event.preventDefault();saveStoryForm(this)">
         ${!isAddingChapter ? `
           <div class="form-2">
             <div>
@@ -527,21 +605,26 @@ function renderEditor(){
         <div class="form-2">
           <div>
             <label>Título del capítulo</label>
-            <input class="input" name="chTitle" value="Capítulo ${nextCapNum}" required>
+            <input class="input" name="chTitle" value="Capítulo ${nextCapNum}" required oninput="if(showPreview)renderChapterPreviewBox()">
           </div>
           <div>
             <label>Banda sonora recomendada (opcional)</label>
-            <input class="input" name="song" placeholder="Ej: BTS — Spring Day">
+            <input class="input" name="song" placeholder="Ej: BTS — Spring Day" oninput="if(showPreview)renderChapterPreviewBox()">
           </div>
         </div>
         <div>
           <label>Notas de la autora (opcional)</label>
-          <textarea class="textarea" name="authorNote" rows="2" placeholder="Un mensajito para tus lectoras..."></textarea>
+          <textarea class="textarea" name="authorNote" rows="2" placeholder="Un mensajito para tus lectoras..." oninput="if(showPreview)renderChapterPreviewBox()"></textarea>
         </div>
         <div>
           <label>Texto del capítulo</label>
-          <textarea class="textarea" name="body" rows="10" required placeholder="Escribí tu capítulo acá..."></textarea>
+          <textarea id="chapterBodyInput" class="textarea" name="body" rows="10" required placeholder="Escribí tu capítulo acá..." oninput="updateWordCounter()"></textarea>
         </div>
+        <div class="editor-bar">
+          <span id="wordCountLabel">0 palabras</span>
+          <button id="togglePreviewBtn" class="btn btn-sm" type="button" onclick="toggleEditorPreview()">👁️ Vista previa</button>
+        </div>
+        <div id="editorPreviewBox" class="preview-box" style="display:none"></div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
           <button class="btn btn-primary" type="submit">${isAddingChapter ? "Publicar nuevo capítulo" : "Publicar historia"}</button>
         </div>
@@ -564,6 +647,7 @@ function saveStoryForm(form){
     st.updated = today;
     const newIdx = st.chapters.length - 1;
     editStoryId = null;
+    showPreview = false;
     saveState();
     toast("¡Capítulo agregado! 💜");
     openStory(st.id, newIdx);
@@ -595,6 +679,7 @@ function saveStoryForm(form){
     comments:[]
   };
   state.stories.unshift(newStory);
+  showPreview = false;
   saveState();
   toast("¡Historia publicada en Borahae Archive! 💜");
   openStory(id, 0);
