@@ -1,0 +1,405 @@
+```html
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Borahae Archive | Plataforma de Fanfics & Omegaverse ARMY</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts: Plus Jakarta Sans (UI) & Lora / Merriweather (Lectura literaria) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['Lora', 'Georgia', 'serif'],
+          },
+          colors: {
+            plum: {
+              950: '#0b0712',
+              900: '#130c20',
+              850: '#191029',
+              800: '#221638',
+              700: '#312050',
+            },
+            bora: {
+              300: '#d8b4fe',
+              400: '#c084fc',
+              500: '#a855f7',
+              600: '#9333ea',
+              700: '#7e22ce',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Temas globales y de lectura */
+    body {
+      background-color: #0b0712;
+      color: #f4effc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* Estilos específicos del contenedor de lectura */
+    .reader-theme-dark {
+      background-color: #0e0917;
+      color: #ede6f7;
+    }
+    .reader-theme-dark .reader-card {
+      background-color: #171026;
+      border-color: rgba(168, 85, 247, 0.2);
+    }
+    .reader-theme-dark .reader-input {
+      background-color: #211736;
+      border-color: rgba(168, 85, 247, 0.25);
+      color: #f4effc;
+    }
+
+    .reader-theme-sepia {
+      background-color: #f5eedc;
+      color: #2c2219;
+    }
+    .reader-theme-sepia .reader-card {
+      background-color: #fbf6ea;
+      border-color: #dfd2b8;
+    }
+    .reader-theme-sepia .reader-input {
+      background-color: #ede2ca;
+      border-color: #d3c2a3;
+      color: #2c2219;
+    }
+
+    .reader-theme-light {
+      background-color: #faf9fd;
+      color: #191426;
+    }
+    .reader-theme-light .reader-card {
+      background-color: #ffffff;
+      border-color: #e4def2;
+    }
+    .reader-theme-light .reader-input {
+      background-color: #f1eef9;
+      border-color: #d8cfec;
+      color: #191426;
+    }
+
+    /* Scrollbar estilizada */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(168, 85, 247, 0.35);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(168, 85, 247, 0.65);
+    }
+
+    /* Animación corazón Kudos */
+    @keyframes floatHeart {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-50px) scale(1.45); }
+    }
+    .animate-heart {
+      animation: floatHeart 0.9s ease-out forwards;
+      pointer-events: none;
+    }
+
+    .hero-glow {
+      background-image: radial-gradient(circle at 12% 30%, rgba(168, 85, 247, 0.22) 0%, transparent 48%),
+                        radial-gradient(circle at 88% 70%, rgba(126, 34, 206, 0.25) 0%, transparent 52%);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-bora-600 selection:text-white">
+
+  <!-- Notificación Toast Flotante -->
+  <div id="toast" class="fixed bottom-5 right-5 z-[60] transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="bg-plum-800 text-white px-4 py-3 rounded-2xl shadow-2xl border border-bora-500/40 flex items-center gap-2.5 text-sm font-medium backdrop-blur-md">
+      <span id="toast-icon">💜</span>
+      <span id="toast-text">Listo</span>
+    </div>
+  </div>
+
+  <!-- ==================== NAVBAR PRINCIPAL ==================== -->
+  <header class="sticky top-0 z-30 bg-plum-950/85 backdrop-blur-xl border-b border-bora-500/15">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+      
+      <!-- Logo -->
+      <button onclick="navigateTo('explore')" class="flex items-center gap-2.5 text-left group focus:outline-none">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-bora-500 via-purple-600 to-indigo-800 flex items-center justify-center shadow-lg shadow-bora-600/30 group-hover:scale-105 transition-transform">
+          <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <span class="font-extrabold text-lg sm:text-xl tracking-tight bg-gradient-to-r from-bora-300 via-purple-200 to-indigo-300 bg-clip-text text-transparent block leading-none">
+            Borahae Archive
+          </span>
+          <span class="text-[10px] text-bora-300/70 tracking-widest uppercase font-semibold">ARMY Fanfic & Omegaverse</span>
+        </div>
+      </button>
+
+      <!-- Navegación Desktop -->
+      <nav class="hidden md:flex items-center gap-1 bg-plum-900/90 p-1.5 rounded-2xl border border-bora-500/15">
+        <button onclick="navigateTo('explore')" id="nav-explore" class="nav-tab px-4 py-1.5 rounded-xl text-sm font-semibold transition-all bg-bora-600 text-white shadow-sm flex items-center gap-2">
+          <i data-lucide="compass" class="w-4 h-4"></i>
+          <span>Explorar</span>
+        </button>
+        <button onclick="navigateTo('library')" id="nav-library" class="nav-tab px-4 py-1.5 rounded-xl text-sm font-semibold transition-all text-purple-200/75 hover:text-white flex items-center gap-2">
+          <i data-lucide="bookmark" class="w-4 h-4"></i>
+          <span>Mi Biblioteca</span>
+          <span id="lib-badge" class="text-xs px-1.5 py-0.5 rounded-full bg-bora-500/25 text-bora-300 font-bold">0</span>
+        </button>
+        <button onclick="navigateTo('profile')" id="nav-profile" class="nav-tab px-4 py-1.5 rounded-xl text-sm font-semibold transition-all text-purple-200/75 hover:text-white flex items-center gap-2">
+          <i data-lucide="user" class="w-4 h-4"></i>
+          <span>Mi Perfil</span>
+        </button>
+      </nav>
+
+      <!-- Botón Acción Principal: + Escribir -->
+      <div class="flex items-center gap-2.5">
+        <button onclick="navigateTo('studio')" class="px-4 py-2 rounded-2xl bg-gradient-to-r from-bora-600 to-purple-600 hover:from-bora-500 hover:to-purple-500 text-white font-bold text-xs sm:text-sm shadow-lg shadow-bora-600/30 flex items-center gap-1.5 transition-all active:scale-95">
+          <i data-lucide="pen-tool" class="w-4 h-4"></i>
+          <span>+ Escribir</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Navegación Móvil Inferior del Header -->
+    <div class="md:hidden flex border-t border-bora-500/15 px-3 py-1.5 gap-1.5 bg-plum-900/60">
+      <button onclick="navigateTo('explore')" id="mob-explore" class="flex-1 py-1.5 rounded-xl text-xs font-bold text-center bg-bora-600 text-white">
+        Explorar
+      </button>
+      <button onclick="navigateTo('library')" id="mob-library" class="flex-1 py-1.5 rounded-xl text-xs font-bold text-center text-purple-200/75">
+        Biblioteca (<span id="mob-lib-badge">0</span>)
+      </button>
+      <button onclick="navigateTo('profile')" id="mob-profile" class="flex-1 py-1.5 rounded-xl text-xs font-bold text-center text-purple-200/75">
+        Mi Perfil
+      </button>
+    </div>
+  </header>
+
+  <!-- ==================== CONTENIDO PRINCIPAL ==================== -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
+
+    <!-- ==================== VISTA 1: EXPLORAR (CATÁLOGO) ==================== -->
+    <section id="view-explore" class="space-y-6">
+      
+      <!-- Hero Banner -->
+      <div class="hero-glow bg-plum-900/90 border border-bora-500/20 rounded-3xl p-6 sm:p-8 relative overflow-hidden">
+        <div class="max-w-3xl space-y-3 relative z-10">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-bora-500/15 border border-bora-400/25 text-bora-300 text-xs font-semibold">
+            <span>💜 Archivo literario libre de censura para ARMY</span>
+          </div>
+          <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
+            Historias, One-Shots y Sagas Omegaverse de BTS en un solo lugar.
+          </h1>
+          <p class="text-sm sm:text-base text-purple-200/80 leading-relaxed">
+            Explorá por ship, tropo o clasificación. Guardá tus sagas favoritas, escuchá la banda sonora recomendada de cada capítulo y publicá tus propias obras.
+          </p>
+        </div>
+      </div>
+
+      <!-- Panel de Búsqueda y Filtros Multidimensionales -->
+      <div class="bg-plum-900/80 border border-bora-500/20 rounded-3xl p-4 sm:p-6 space-y-5 shadow-xl">
+        <!-- Barra de Búsqueda + Orden -->
+        <div class="flex flex-col md:flex-row gap-3">
+          <div class="relative flex-1">
+            <i data-lucide="search" class="w-4 h-4 text-bora-300/60 absolute left-4 top-1/2 -translate-y-1/2"></i>
+            <input 
+              type="text" 
+              id="search-input" 
+              oninput="applyFilters()" 
+              placeholder="Buscar por título, autora (@handle), sinopsis o etiquetas (#AlfaPuro, #SlowBurn)..." 
+              class="w-full bg-plum-850 border border-bora-500/25 rounded-2xl pl-11 pr-4 py-3 text-sm text-white placeholder-purple-300/40 focus:outline-none focus:ring-2 focus:ring-bora-500"
+            />
+          </div>
+
+          <div class="flex flex-wrap sm:flex-nowrap gap-2.5">
+            <!-- Filtro Clasificación -->
+            <select id="filter-rating" onchange="applyFilters()" class="bg-plum-850 border border-bora-500/25 rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-purple-100 focus:outline-none focus:ring-2 focus:ring-bora-500">
+              <option value="Todas">Clasificación: Todas</option>
+              <option value="General">General (ATP)</option>
+              <option value="+13">+13 Teen</option>
+              <option value="+16">+16 Mature</option>
+              <option value="+18">+18 Explícito</option>
+            </select>
+
+            <!-- Filtro Estado -->
+            <select id="filter-status" onchange="applyFilters()" class="bg-plum-850 border border-bora-500/25 rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-purple-100 focus:outline-none focus:ring-2 focus:ring-bora-500">
+              <option value="Todos">Estado: Todos</option>
+              <option value="En curso">⏳ En curso</option>
+              <option value="Completado">✅ Completado</option>
+            </select>
+
+            <!-- Ordenar -->
+            <select id="sort-select" onchange="applyFilters()" class="bg-plum-850 border border-bora-500/25 rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-purple-100 focus:outline-none focus:ring-2 focus:ring-bora-500">
+              <option value="recent">🕒 Recientes</option>
+              <option value="kudos">💜 Más Kudos</option>
+              <option value="chapters">📚 Más capítulos</option>
+              <option value="words">📖 Más palabras</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Filtro Ships -->
+        <div class="space-y-2">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-bora-300/70 block">Ships & Dinámicas</span>
+          <div id="ship-pills" class="flex flex-wrap gap-1.5"></div>
+        </div>
+
+        <!-- Filtro Categoría / Género -->
+        <div class="space-y-2">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-bora-300/70 block">Categoría / Género</span>
+          <div id="genre-pills" class="flex flex-wrap gap-1.5"></div>
+        </div>
+      </div>
+
+      <!-- Barra de resultados -->
+      <div class="flex items-center justify-between px-1">
+        <p class="text-sm text-purple-200/80">
+          Mostrando <strong id="catalog-count" class="text-bora-300 font-bold">0</strong> historias
+        </p>
+        <button id="clear-filters-btn" onclick="resetFilters()" class="hidden text-xs font-semibold text-bora-400 hover:text-bora-300 flex items-center gap-1">
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+          <span>Limpiar filtros</span>
+        </button>
+      </div>
+
+      <!-- Grilla de Tarjetas -->
+      <div id="catalog-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+
+      <!-- Sin resultados -->
+      <div id="catalog-empty" class="hidden bg-plum-900/80 border border-bora-500/20 rounded-3xl p-12 text-center space-y-3">
+        <div class="w-14 h-14 rounded-2xl bg-bora-500/15 text-bora-300 flex items-center justify-center mx-auto">
+          <i data-lucide="search-x" class="w-7 h-7"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white">No encontramos historias con esa combinación</h3>
+        <p class="text-sm text-purple-200/70 max-w-md mx-auto">Probá quitando alguno de los filtros activos o animate a escribir vos misma esta historia.</p>
+        <button onclick="resetFilters()" class="px-5 py-2.5 rounded-2xl bg-bora-600 hover:bg-bora-500 text-white text-sm font-semibold">
+          Mostrar todo el catálogo
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== VISTA 2: MI BIBLIOTECA ==================== -->
+    <section id="view-library" class="hidden space-y-6">
+      <div class="bg-plum-900/90 border border-bora-500/20 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white flex items-center gap-2.5">
+            <i data-lucide="bookmark" class="w-7 h-7 text-bora-400"></i>
+            <span>Mi Biblioteca ARMY</span>
+          </h2>
+          <p class="text-sm text-purple-200/75 mt-1">Tus fics guardados y tu historial de lectura reciente para retomar justo donde dejaste.</p>
+        </div>
+        <button onclick="navigateTo('explore')" class="px-4 py-2.5 rounded-2xl bg-bora-600 hover:bg-bora-500 text-white text-sm font-bold self-start sm:self-auto">
+          Explorar catálogo
+        </button>
+      </div>
+
+      <!-- Historial de Lectura Reciente -->
+      <div id="history-section" class="hidden space-y-3">
+        <h3 class="text-sm font-bold uppercase tracking-wider text-bora-300 flex items-center gap-2 px-1">
+          <i data-lucide="history" class="w-4 h-4"></i>
+          <span>Continuar leyendo (Historial reciente)</span>
+        </h3>
+        <div id="history-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+      </div>
+
+      <!-- Guardados -->
+      <div class="space-y-3">
+        <h3 class="text-sm font-bold uppercase tracking-wider text-bora-300 flex items-center gap-2 px-1">
+          <i data-lucide="heart" class="w-4 h-4"></i>
+          <span>Historias Guardadas (<span id="saved-total-count">0</span>)</span>
+        </h3>
+        <div id="library-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+        <div id="library-empty" class="hidden bg-plum-900/70 border border-bora-500/20 rounded-3xl p-12 text-center space-y-3">
+          <div class="text-4xl">📚</div>
+          <h4 class="text-lg font-bold text-white">Tu lista de guardados está vacía</h4>
+          <p class="text-sm text-purple-200/70 max-w-md mx-auto">Tocá el ícono de marcador en cualquier historia para guardarla acá.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VISTA 3: MI PERFIL & RESPALDO ==================== -->
+    <section id="view-profile" class="hidden max-w-4xl mx-auto space-y-6">
+      
+      <!-- Tarjeta de Perfil Editable -->
+      <div class="bg-plum-900/90 border border-bora-500/20 rounded-3xl p-6 sm:p-8 space-y-6">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-bora-500/15 pb-5">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 rounded-3xl bg-gradient-to-br from-bora-500 to-indigo-700 flex items-center justify-center text-2xl font-extrabold text-white shadow-lg">
+              💜
+            </div>
+            <div>
+              <h2 id="prof-display-header" class="text-xl sm:text-2xl font-extrabold text-white">ARMY Writer</h2>
+              <p id="prof-handle-header" class="text-sm text-bora-400 font-semibold">@army_writer</p>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-2 text-xs">
+            <span class="px-3 py-1.5 rounded-xl bg-bora-500/15 border border-bora-500/25 text-bora-200 font-semibold">
+              Bias: <strong id="prof-bias-badge">OT7</strong>
+            </span>
+            <span class="px-3 py-1.5 rounded-xl bg-purple-500/15 border border-purple-500/25 text-purple-200 font-semibold">
+              Ship fav: <strong id="prof-ship-badge">Yoonmin</strong>
+            </span>
+          </div>
+        </div>
+
+        <form onsubmit="saveUserProfile(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-purple-200/70 mb-1.5">Nombre visible</label>
+            <input type="text" id="prof-name" required class="w-full bg-plum-850 border border-bora-500/25 rounded-2xl px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-bora-500" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-purple-200/70 mb-1.5">Usuario (@handle)</label>
+            <input type="text" id="prof-handle" required class="w-full bg-plum-850 border border-bora-500/25 rounded-2xl px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-bora-500" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-purple-200/70 mb-1.5">Tu Bias</label>
+            <select id="prof-bias" class="w-full bg-plum-850 border border-bora-500/25 rounded-2xl px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-bora-500">
+              <option value="OT7">OT7 (Los siete)</option>
+              <option value="Kim Namjoon (RM)">Kim Namjoon (RM)</option>
+              <option value="Kim Seokjin (Jin)">Kim Seokjin (Jin)</option>
+              <option value="Min Yoongi (Suga)">Min Yoongi (Suga)</option>
+              <option value="Jung Hoseok (J-Hope)">Jung Hoseok (J-Hope)</option>
+              <option value="Park Jimin (Jimin)">Park Jimin (Jimin)</option>
+              <option value="Kim Taehyung (V)">Kim Taehyung (V)</option>
+              <option value="Jeon Jungkook (JK)">Jeon Jungkook (JK)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-purple-200/70 mb-1.5">Ship Favorito</label>
+            <select id="prof-fav-ship" class="w-full bg-plum-850 border border-bora-500/25 rounded-2xl px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-bora-500">
+              <option value="Yoonmin">Yoonmin</option>
+              <option value="Taekook">Taekook</option>
+              <option value="Namjin">Namjin</option>
+              <option value="Sope">Sope</option>
+              <option value="Vmin">Vmin</option>
+              <option value="Jikook">Jikook</option>
+              <option value="OT7">OT7</option>
+              <option value="Reader / OC">Reader / OC</option>
+            </select>
+          </div>
+
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-bold uppercase tracking-wider text-purple-200/70 mb-1.5">Biografía corta</label>
+            <textarea id="prof-bio" r
