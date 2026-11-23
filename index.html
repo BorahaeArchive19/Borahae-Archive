@@ -702,9 +702,8 @@ function addComment(storyId, form){
   saveState();
   render();
   toast("Comentario publicado 💜");
-}
-
-function updateWordCounter(){
+    }
+  function updateWordCounter(){
   const bodyEl = document.getElementById("chapterBodyInput");
   const countEl = document.getElementById("wordCountLabel");
   if(!bodyEl || !countEl) return;
@@ -933,4 +932,103 @@ function saveStoryForm(form){
 }
 
 function renderProfile(){
-  const myStories = state.stories.filter(s => s.au
+  const myStories = state.stories.filter(s => s.author.toLowerCase() === (state.profile.handle||"").toLowerCase());
+  const totalChapters = state.stories.reduce((acc, s) => acc + (s.chapters ? s.chapters.length : 0), 0);
+  const totalComments = state.stories.reduce((acc, s) => acc + (s.comments ? s.comments.length : 0), 0);
+
+  return `
+    <section class="reader-box" style="margin-bottom:18px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <h1 style="font-size:1.35rem">Mi Perfil ARMY</h1>
+          ${state.profile.isAdmin ? `<span class="admin-pill">🛡️ Administradora</span>` : ""}
+        </div>
+      </div>
+      <form class="form-grid" onsubmit="event.preventDefault();saveProfileForm(this)">
+        <div class="form-2">
+          <div>
+            <label>Tu @usuario o seudónimo</label>
+            <input class="input" name="handle" value="${esc(state.profile.handle)}" required>
+          </div>
+          <div>
+            <label>Bias / Wreck</label>
+            <input class="input" name="bias" value="${esc(state.profile.bias)}">
+          </div>
+        </div>
+        <div>
+          <label>Biografía corta</label>
+          <input class="input" name="bio" value="${esc(state.profile.bio)}">
+        </div>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--text)">
+          <input type="checkbox" name="isAdmin" ${state.profile.isAdmin?"checked":""}>
+          Activar modo Administradora (fijar historias, moderar comentarios y ver resumen)
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--text)">
+          <input type="checkbox" name="allowAdult" ${state.prefs.allowAdult?"checked":""}>
+          Mostrar historias +16 / +18 sin pantalla de confirmación previa
+        </label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-primary" type="submit">Guardar perfil</button>
+          <button class="btn" type="button" onclick="exportJsonBackup()">💾 Respaldar todo (.json)</button>
+          <label class="btn" style="margin:0">📂 Restaurar .json <input type="file" accept=".json,application/json" style="display:none" onchange="importJsonBackup(this.files[0])"></label>
+        </div>
+      </form>
+
+      ${state.profile.isAdmin ? `
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+          <h2 style="font-size:1.05rem">Panel de Administradora — Resumen del archivo</h2>
+          <div class="stats-grid">
+            <div class="stat-card"><div class="stat-num">${state.stories.length}</div><div class="stat-lbl">Historias totales</div></div>
+            <div class="stat-card"><div class="stat-num">${totalChapters}</div><div class="stat-lbl">Capítulos publicados</div></div>
+            <div class="stat-card"><div class="stat-num">${totalComments}</div><div class="stat-lbl">Comentarios</div></div>
+          </div>
+        </div>
+      ` : ""}
+    </section>
+    <h2 style="font-size:1.1rem;margin-bottom:12px">Mis historias publicadas (${myStories.length})</h2>
+    ${myStories.length ? `<div class="grid">${myStories.map(renderCard).join("")}</div>` : `<div class="empty">Todavía no publicaste historias con ${esc(state.profile.handle)}. Tocá "+ Publicar Fic" para empezar 💜</div>`}
+  `;
+}
+
+function saveProfileForm(form){
+  const clean = normHandle(form.handle.value || "@army_autora");
+  state.profile.handle = clean;
+  state.profile.bias = form.bias.value.trim() || "OT7";
+  state.profile.bio = form.bio.value.trim();
+  state.profile.isAdmin = Boolean(form.isAdmin && form.isAdmin.checked);
+  state.prefs.allowAdult = form.allowAdult.checked;
+  saveState();
+  render();
+  toast("Perfil actualizado 💜");
+}
+
+function syncMainNav(){
+  const nav = document.getElementById("mainNav");
+  if(!nav) return;
+  nav.querySelectorAll("[data-nav]").forEach(el => {
+    el.classList.toggle("active-tab", el.getAttribute("data-nav") === view);
+  });
+}
+
+function render(){
+  document.getElementById("savedCount").textContent = state.saved.length;
+  syncMainNav();
+  const app = document.getElementById("app");
+  if(view === "reader") app.innerHTML = renderReader();
+  else if(view === "editor") app.innerHTML = renderEditor();
+  else if(view === "profile") app.innerHTML = renderProfile();
+  else if(view === "rules") app.innerHTML = renderRules();
+  else if(view === "saved"){
+    const savedList = sortStories(state.stories.filter(s => state.saved.includes(s.id)));
+    app.innerHTML = renderArchive(savedList, "Mi biblioteca guardada");
+  }else{
+    app.innerHTML = renderArchive(getFilteredStories());
+  }
+  updateReadProgress();
+}
+
+applyPrefs();
+render();
+</script>
+</body>
+</html>
