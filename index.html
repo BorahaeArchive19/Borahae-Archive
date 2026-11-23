@@ -509,6 +509,7 @@ function renderCard(s){
         </div>
         <h3 class="title"><a href="#${esc(s.id)}" onclick="event.preventDefault();openStory('${esc(s.id)}')">${esc(s.title)}</a></h3>
         <div class="author">por <a href="autoras.html?autor=${encodeURIComponent(s.author)}" style="text-decoration:underline dotted;text-underline-offset:3px">${esc(s.author)}</a> · ${esc(s.status)}</div>
+        
         <p class="synopsis" style="margin-top:8px">${esc(s.synopsis)}</p>
         <div class="tags" style="margin-top:10px">
           ${(s.warnings||[]).map(w=>`<span class="tag">⚠️ ${esc(w)}</span>`).join("")}
@@ -619,6 +620,7 @@ function renderReader(){
       </div>
       <h1 style="font-size:1.5rem;margin-top:6px">${esc(s.title)}</h1>
       <div class="author">por <a href="autoras.html?autor=${encodeURIComponent(s.author)}" style="text-decoration:underline dotted;text-underline-offset:3px">${esc(s.author)}</a> · Actualizado ${esc(s.updated)}</div>
+      
       <p style="margin-top:10px;color:var(--muted);font-size:.92rem">${esc(s.synopsis)}</p>
       <div class="tags" style="margin-top:10px">
         ${(s.warnings||[]).map(w=>`<span class="tag">⚠️ ${esc(w)}</span>`).join("")}
