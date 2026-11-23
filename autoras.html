@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Autoras — Borahae Archive</title>
+<style>
+:root{--bg:#0d0a14;--surface:#171224;--surface2:#221a36;--text:#f3eefc;--muted:#b4a7cc;--accent:#9d4edd;--accent2:#c77dff;--border:rgba(199,125,255,.18);--danger:#ff5c8a;--font-ui:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;--font-read:Georgia,Cambria,"Times New Roman",serif;--read-size:18px}
+body.theme-cream{--bg:#f6f1e7;--surface:#fffdf8;--surface2:#efe7d6;--text:#231c2e;--muted:#655a78;--accent:#7b2cbf;--accent2:#5a189a;--border:rgba(90,24,154,.16)}
+body.theme-light{--bg:#f8f6fc;--surface:#ffffff;--surface2:#efe9fa;--text:#1b1526;--muted:#5e5273;--accent:#7b2cbf;--accent2:#9d4edd;--border:rgba(123,44,191,.16)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font-ui);line-height:1.55;min-height:100vh;transition:background .2s,color .2s}
+a{color:var(--accent2);text-decoration:none}
+button,input,select,textarea{font-family:inherit;color:inherit}
+button{cursor:pointer;border:none;background:none}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px 48px}
+header{position:sticky;top:0;z-index:30;backdrop-filter:blur(12px);background:color-mix(in srgb,var(--bg) 86%,transparent);border-bottom:1px solid var(--border)}
+.nav{max-width:1120px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.1rem;letter-spacing:.3px}
+.brand-badge{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:1rem}
+.nav-btns{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:4px;padding:8px 14px;border-radius:10px;font-size:.88rem;font-weight:600;background:var(--surface2);border:1px solid var(--border);transition:.15s}
+.btn:hover{border-color:var(--accent2);transform:translateY(-1px)}
+.btn.active-tab{background:color-mix(in srgb,var(--accent) 28%,var(--surface2));border-color:var(--accent2);color:#fff}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none}
+.btn-sm{padding:6px 10px;font-size:.8rem;border-radius:8px}
+.admin-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;font-size:.72rem;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+.author-link{color:var(--accent2);font-weight:600;text-decoration:underline dotted;text-underline-offset:3px}
+.hero{margin:20px 0;padding:22px;border-radius:18px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 20%,var(--surface)),var(--surface));border:1px solid var(--border)}
+.hero h1{font-size:1.55rem;margin-bottom:6px}
+.hero p{color:var(--muted);font-size:.95rem;max-width:720px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.card,.box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px}
+.card{display:flex;flex-direction:column;justify-content:space-between;gap:12px}
+.card:hover{border-color:var(--accent2)}
+.meta-top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:.78rem;color:var(--muted);flex-wrap:wrap}
+.rating{padding:2px 8px;border-radius:6px;font-weight:700;background:var(--surface2);color:var(--accent2)}
+.rating.adult{background:color-mix(in srgb,var(--danger) 20%,transparent);color:var(--danger)}
+.title{font-size:1.15rem;font-weight:700;margin:4px 0}
+.author{font-size:.84rem;color:var(--muted)}
+.synopsis{font-size:.88rem;color:var(--muted);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:.74rem;padding:3px 8px;border-radius:7px;background:var(--surface2);color:var(--text)}
+.card-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;padding-top:10px;border-top:1px solid var(--border);font-size:.82rem;color:var(--muted)}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0}
+.stat-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px}
+.stat-num{font-size:1.35rem;font-weight:800;color:var(--accent2)}
+.stat-lbl{font-size:.78rem;color:var(--muted)}
+.avatar-circle{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:800;display:grid;place-items:center;font-size:1.1rem;flex-shrink:0}
+.form-grid{display:grid;gap:12px;max-width:740px}
+.form-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:10px 13px;font-size:.92rem}
+label{display:block;font-size:.84rem;font-weight:600;margin-bottom:4px;color:var(--muted)}
+.toast{position:fixed;bottom:18px;right:18px;z-index:60;background:var(--accent);color:#fff;padding:10px 16px;border-radius:12px;font-size:.88rem;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.35);display:none}
+.empty{text-align:center;padding:36px 16px;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:16px}
+</style>
+</head>
+<body>
+<header>
+  <div class="nav">
+    <a class="brand" href="index.html">
+      <span class="brand-badge">💜</span>
+      <span>Borahae Archive</span>
+    </a>
+    <nav class="nav-btns" aria-label="Menú principal">
+      <a class="btn btn-sm" href="index.html">Archivo</a>
+      <a class="btn btn-sm active-tab" href="autoras.html">Autoras</a>
+      <a class="btn btn-sm" href="index.html#guardados">Guardados (<span id="savedCount">0</span>)</a>
+      <a class="btn btn-sm" href="index.html#reglas">Reglas</a>
+      <a class="btn btn-sm" href="index.html#perfil">Mi Perfil</a>
+      <a class="btn btn-primary btn-sm" href="index.html#publicar">+ Publicar Fic</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="app"></main>
+<div class="toast" id="toast"></div>
+<script>
+const STORAGE_KEY = "borahae_archive_v1";
+const DEFAULT_AUTHORS = {
+  "@borahae_admin":{handle:"@borahae_admin",bias:"OT7",bio:"Administradora de Borahae Archive — cuidando el espacio y las historias 💜"},
+  "@min_borahae":{handle:"@min_borahae",bias:"Yoongi & Jimin",bio:"Fan de los one-shots lluviosos, cafés tibios y finales que abrazan el corazón."},
+  "@luna_omega":{handle:"@luna_omega",bias:"Taehyung & Jungkook",bio:"Escribiendo sagas Omegaverse, destinos entrelazados y angst con redención."},
+  "@seoul_diario":{handle:"@seoul_diario",bias:"Namjoon & Jin",bio:"Historias nocturnas, AUs cotidianos y canciones dedicadas a medianoche."}
+};
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    const parsed = raw ? JSON.parse(raw) : {};
+    return {
+      profile:{handle:"@borahae_admin",bias:"OT7",bio:"Administradora de Borahae Archive 💜",isAdmin:true,...(parsed.profile||{})},
+      authors:{...structuredClone(DEFAULT_AUTHORS),...(parsed.authors||{})},
+      prefs:{theme:"dark",fontSize:18,...(parsed.prefs||{})},
+      saved:Array.isArray(parsed.saved)?parsed.saved:[],
+      stories:Array.isArray(parsed.stories)?parsed.stories:[]
+    };
+  }catch(e){
+    return {profile:{handle:"@borahae_admin",bias:"OT7",bio:"",isAdmin:true},authors:structuredClone(DEFAULT_AUTHORS),prefs:{theme:"dark",fontSize:18},saved:[],stories:[]};
+  }
+}
+
+let state = loadState();
+
+function normHandle(h=""){
+  const clean = String(h).trim();
+  if(!clean) return "@army_autora";
+  return clean.startsWith("@") ? clean : "@" + clean;
+}
+
+function getAuthorRecord(handle){
+  const clean = normHandle(handle);
+  const key = Object.keys(state.authors || {}).find(k => k.toLowerCase() === clean.toLowerCase());
+  if(key) return state.authors[key];
+  if(clean.toLowerCase() === (state.profile.handle || "").toLowerCase()){
+    return {handle:state.profile.handle,bias:state.profile.bias||"OT7",bio:state.profile.bio||""};
+  }
+  return {handle:clean,bias:"OT7",bio:"Autora/or en Borahae Archive 💜"};
+}
+
+function getAllAuthors(){
+  const map = new Map();
+  Object.values(state.authors || {}).forEach(a => {
+    if(a && a.handle) map.set(a.handle.toLowerCase(), getAuthorRecord(a.handle));
+  });
+  state.stories.forEach(s => {
+    const rec = getAuthorRecord(s.author);
+    map.set(rec.handle.toLowerCase(), rec);
+  });
+  return Array.from(map.values());
+}
+
+function saveState(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  document.getElementById("savedCount").textContent = state.saved.length;
+}
+
+function applyPrefs(){
+  document.body.classList.remove("theme-cream","theme-light");
+  if(state.prefs.theme === "cream") document.body.classList.add("theme-cream");
+  if(state.prefs.theme === "light") document.body.classList.add("theme-light");
+  document.documentElement.style.setProperty("--read-size", (state.prefs.fontSize || 18) + "px");
+}
+
+function toast(msg){
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.style.display = "block";
+  clearTimeout(toast._t);
+  toast._t = setTimeout(()=>{ el.style.display = "none"; }, 2400);
+}
+
+function esc(str=""){
+  return String(str).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+}
+
+function getSelectedAuthorParam(){
+  const params = new URLSearchParams(window.location.search);
+  return params.get("autor") || params.get("author") || "";
+}
+
+function goAuthor(handle){
+  const clean = normHandle(handle);
+  const url = `autoras.html?autor=${encodeURIComponent(clean)}`;
+  window.history.pushState({author:clean}, "", url);
+  render();
+}
+
+function goDirectory(){
+  window.history.pushState({}, "", "autoras.html");
+  render();
+}
+
+function renderStoryCard(s){
+  const isAdult = String(s.rating || "").startsWith("+16") || String(s.rating || "").startsWith("+18");
+  return `
+    <article class="card">
+      <div>
+        <div class="meta-top">
+          <span>${esc(s.ship)} · ${esc(s.category)} · ${(s.chapters||[]).length} cap.</span>
+          <span class="rating ${isAdult?"adult":""}">${esc(s.rating)}</span>
+        </div>
+        <h3 class="title"><a href="index.html#fic=${encodeURIComponent(s.id)}">${esc(s.title)}</a></h3>
+        <div class="author">por <a class="author-link" href="autoras.html?autor=${encodeURIComponent(s.author)}" onclick="event.preventDefault();goAuthor('${esc(s.author)}')">${esc(s.author)}</a> · ${esc(s.status)}</div>
+        <p class="synopsis" style="margin-top:8px">${esc(s.synopsis)}</p>
+        <div class="tags" style="margin-top:10px">
+          ${(s.tags||[]).slice(0,4).map(t=>`<span class="tag">#${esc(t)}</span>`).join("")}
+        </div>
+      </div>
+      <div class="card-foot">
+        <span>💜 ${s.likes||0} · 💬 ${(s.comments||[]).length}</span>
+        <a class="btn btn-primary btn-sm" href="index.html#fic=${encodeURIComponent(s.id)}">Leer en Archivo</a>
+      </div>
+    </article>
+  `;
+}
+
+function renderSingleAuthor(rawHandle){
+  const info = getAuthorRecord(rawHandle);
+  const works = state.stories.filter(s => String(s.author||"").toLowerCase() === info.handle.toLowerCase());
+  const totalCaps = works.reduce((acc, s) => acc + ((s.chapters||[]).length), 0);
+  const totalLikes = works.reduce((acc, s) => acc + (s.likes||0), 0);
+  const isOwn = info.handle.toLowerCase() === (state.profile.handle||"").toLowerCase();
+  const canEdit = isOwn || state.profile.isAdmin;
+
+  return `
+    <div style="margin:16px 0">
+      <button class="btn btn-sm" onclick="goDirectory()">← Todas las autoras</button>
+    </div>
+    <section class="box" style="margin-bottom:18px">
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <div class="avatar-circle" style="width:56px;height:56px;font-size:1.25rem">${esc(info.handle.replace(/^@/,"").slice(0,2).toUpperCase())}</div>
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <h1 style="font-size:1.45rem">${esc(info.handle)}</h1>
+            ${(isOwn && state.profile.isAdmin) ? `<span class="admin-pill">🛡️ Administradora</span>` : ""}
+          </div>
+          <div class="author">Bias / Wreck: ${esc(info.bias || "OT7")}</div>
+        </div>
+      </div>
+      <p style="margin-top:12px;color:var(--muted);font-size:.95rem">${esc(info.bio || "Autora/or en Borahae Archive 💜")}</p>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-num">${works.length}</div><div class="stat-lbl">Historias</div></div>
+        <div class="stat-card"><div class="stat-num">${totalCaps}</div><div class="stat-lbl">Capítulos</div></div>
+        <div class="stat-card"><div class="stat-num">${totalLikes}</div><div class="stat-lbl">Corazones 💜</div></div>
+      </div>
+      ${canEdit ? `
+        <details style="margin-top:10px">
+          <summary style="cursor:pointer;font-size:.86rem;font-weight:600;color:var(--accent2)">✏️ Editar bio y bias de ${esc(info.handle)}</summary>
+          <form class="form-grid" style="margin-top:12px" onsubmit="event.preventDefault();saveAuthorProfile('${esc(info.handle)}',this)">
+            <div class="form-2">
+              <div>
+                <label>Bias / Wreck</label>
+                <input class="input" name="bias" value="${esc(info.bias || "OT7")}">
+              </div>
+              <div>
+                <label>Biografía</label>
+                <input class="input" name="bio" value="${esc(info.bio || "")}">
+              </div>
+            </div>
+            <div><button class="btn btn-primary btn-sm" type="submit">Guardar cambios</button></div>
+          </form>
+        </details>
+      ` : ""}
+    </section>
+    <h2 style="font-size:1.1rem;margin-bottom:12px">Historias de ${esc(info.handle)} (${works.length})</h2>
+    ${works.length ? `<div class="grid">${works.map(renderStoryCard).join("")}</div>` : `<div class="empty">Esta autora todavía no publicó historias en el archivo 💜</div>`}
+  `;
+}
+
+function saveAuthorProfile(handle, form){
+  const clean = normHandle(handle);
+  const bias = form.bias.value.trim() || "OT7";
+  const bio = form.bio.value.trim() || "Autora/or en Borahae Archive 💜";
+  state.authors = state.authors || {};
+  const key = Object.keys(state.authors).find(k => k.toLowerCase() === clean.toLowerCase()) || clean;
+  state.authors[key] = {handle:clean, bias, bio};
+  if(clean.toLowerCase() === (state.profile.handle||"").toLowerCase()){
+    state.profile.bias = bias;
+    state.profile.bio = bio;
+  }
+  saveState();
+  render();
+  toast("Perfil guardado 💜");
+}
+
+function renderDirectory(){
+  const authors = getAllAuthors();
+  return `
+    <section class="hero">
+      <h1>✍️ Autoras y Autores de Borahae Archive</h1>
+      <p>Explorá los perfiles de quienes escriben en el archivo y abrí su página individual con su bio, bias e historias.</p>
+    </section>
+    <div class="grid">
+      ${authors.map(a => {
+        const works = state.stories.filter(s => String(s.author||"").toLowerCase() === a.handle.toLowerCase());
+        const likes = works.reduce((acc, s) => acc + (s.likes||0), 0);
+        const isAdmin = a.handle.toLowerCase() === (state.profile.handle||"").toLowerCase() && state.profile.isAdmin;
+        return `
+          <article class="card">
+            <div>
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+                <div class="avatar-circle">${esc(a.handle.replace(/^@/,"").slice(0,2).toUpperCase())}</div>
+                <div>
+                  <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+                    <h2 class="title" style="margin:0"><a href="autoras.html?autor=${encodeURIComponent(a.handle)}" onclick="event.preventDefault();goAuthor('${esc(a.handle)}')">${esc(a.handle)}</a></h2>
+                    ${isAdmin ? `<span class="admin-pill">🛡️ Admin</span>` : ""}
+                  </div>
+                  <div class="author">Bias: ${esc(a.bias || "OT7")}</div>
+                </div>
+              </div>
+              <p class="synopsis">${esc(a.bio || "Autora/or en Borahae Archive 💜")}</p>
+            </div>
+            <div class="card-foot">
+              <span>📚 ${works.length} fics · 💜 ${likes}</span>
+              <a class="btn btn-primary btn-sm" href="autoras.html?autor=${encodeURIComponent(a.handle)}" onclick="event.preventDefault();goAuthor('${esc(a.handle)}')">Ver perfil</a>
+            </div>
+          </article>
+        `;
+      }).join("")}
+    </div>
+  `;
+}
+
+function render(){
+  state = loadState();
+  document.getElementById("savedCount").textContent = state.saved.length;
+  applyPrefs();
+  const param = getSelectedAuthorParam();
+  document.getElementById("app").innerHTML = param ? renderSingleAuthor(param) : renderDirectory();
+}
+
+window.addEventListener("popstate", render);
+render();
+</script>
+</body>
+</html>
